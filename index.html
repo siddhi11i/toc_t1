@@ -50,22 +50,23 @@
     .demo-buttons-group {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
       flex: 1;
     }
 
     .btn {
-      padding: 12px 20px;
+      padding: 12px 18px;
       border-radius: 8px;
       border: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: opacity 0.2s ease, transform 0.1s ease, filter 0.2s ease;
       color: #FFFFFF;
       text-align: center;
       user-select: none;
+      white-space: nowrap;
     }
 
     .btn:hover:not(:disabled) {
@@ -93,6 +94,14 @@
 
     .btn-demo3 {
       background-color: #EA580C;
+    }
+
+    .btn-demo4 {
+      background-color: #7C3AED;
+    }
+
+    .btn-demo5 {
+      background-color: #991B1B;
     }
 
     .btn-reset {
@@ -255,6 +264,13 @@
       animation: pulseSlot 1.2s infinite ease-in-out;
     }
 
+    .slot-box.unavailable-flash {
+      background-color: #FEE2E2 !important;
+      border: 2px solid #EF4444 !important;
+      color: #DC2626 !important;
+      animation: shakeSlot 0.5s ease-in-out;
+    }
+
     @keyframes pulseSlot {
       0%, 100% {
         box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4);
@@ -262,6 +278,12 @@
       50% {
         box-shadow: 0 0 0 8px rgba(234, 179, 8, 0.15);
       }
+    }
+
+    @keyframes shakeSlot {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
     }
 
     /* Interactive Visual Overlays */
@@ -615,6 +637,8 @@
       <button id="btnDemo1" class="btn btn-demo1" onclick="runDemo(1)">Run Demo 1: Valid Entry</button>
       <button id="btnDemo2" class="btn btn-demo2" onclick="runDemo(2)">Run Demo 2: Invalid Plate</button>
       <button id="btnDemo3" class="btn btn-demo3" onclick="runDemo(3)">Run Demo 3: Overstay Fine</button>
+      <button id="btnDemo4" class="btn btn-demo4" onclick="runDemo(4)">Run Demo 4: Slot Unavailable</button>
+      <button id="btnDemo5" class="btn btn-demo5" onclick="runDemo(5)">Run Demo 5: Payment Failure</button>
     </div>
     <button id="btnReset" class="btn btn-reset" onclick="resetSystem()">Reset</button>
   </div>
@@ -733,8 +757,8 @@
   </main>
 
   <script>
-    // Shared Steps 1 through 14 between Demo 1 and Demo 3
-    const SHARED_ENTRY_STEPS = [
+    // Shared Steps 1 through 7 for normal booking flows (q0 to q9)
+    const SHARED_BOOKING_PRE_SLOT = [
       {
         from: 'q0',
         to: 'q1',
@@ -783,7 +807,11 @@
         transition: 'Time_slot_selected',
         description: 'The selected time slot is submitted for availability checking',
         action: 'shared_step7'
-      },
+      }
+    ];
+
+    // Shared Steps 8 through 14 for Slot B15 assigned flow (q9 to q19)
+    const SHARED_B15_SLOT_AND_PARK = [
       {
         from: 'q9',
         to: 'q10',
@@ -833,6 +861,12 @@
         description: 'Slot B15 is officially assigned and a parking ticket is generated',
         action: 'shared_step14'
       }
+    ];
+
+    // Complete Shared 14 Steps for Demo 1 and Demo 3
+    const SHARED_ENTRY_STEPS = [
+      ...SHARED_BOOKING_PRE_SLOT,
+      ...SHARED_B15_SLOT_AND_PARK
     ];
 
     // Demo 1: Valid Entry (20 Steps)
@@ -921,7 +955,7 @@
       }
     ];
 
-    // Demo 3: Overstay Fine Full Path Starting from q0 (23 Steps)
+    // Demo 3: Overstay Fine Full Path (23 Steps)
     const DEMO_3_STEPS = [
       ...SHARED_ENTRY_STEPS,
       {
@@ -989,10 +1023,162 @@
       }
     ];
 
+    // Demo 4: Slot Unavailable (21 Steps)
+    const DEMO_4_STEPS = [
+      ...SHARED_BOOKING_PRE_SLOT,
+      {
+        from: 'q9',
+        to: 'q12',
+        transition: 'Time_slot_unavailable',
+        description: 'The requested fourteen thirty slot is not available',
+        action: 'd4_step8'
+      },
+      {
+        from: 'q12',
+        to: 'q13',
+        transition: 'Next_time_slot_select',
+        description: 'The system displays the next available time slots to the driver',
+        action: 'd4_step9'
+      },
+      {
+        from: 'q13',
+        to: 'q14',
+        transition: 'Next_location_slot_select',
+        description: 'The driver selects an alternative slot, B18, from the next available options',
+        action: 'd4_step10'
+      },
+      {
+        from: 'q14',
+        to: 'q15',
+        transition: 'User_selected',
+        description: 'The driver confirms and decides to continue with slot B18',
+        action: 'd4_step11'
+      },
+      {
+        from: 'q15',
+        to: 'q16',
+        transition: 'Fee_receipt',
+        description: 'The parking fee is calculated and a receipt is generated',
+        action: 'd4_step12'
+      },
+      {
+        from: 'q16',
+        to: 'q17',
+        transition: 'Payment_monitor',
+        description: 'The payment process is initiated and monitored',
+        action: 'd4_step13'
+      },
+      {
+        from: 'q17',
+        to: 'q18',
+        transition: 'Payment_Done',
+        description: 'Payment is completed successfully',
+        action: 'd4_step14'
+      },
+      {
+        from: 'q18',
+        to: 'q19',
+        transition: 'Parking_vehicle',
+        description: 'Slot B18 is officially assigned and a parking ticket is generated',
+        action: 'd4_step15'
+      },
+      {
+        from: 'q19',
+        to: 'q20',
+        transition: 'Monitoring_started',
+        description: 'The system begins monitoring the parking duration',
+        action: 'd4_step16'
+      },
+      {
+        from: 'q20',
+        to: 'q21',
+        transition: 'Time check performed',
+        description: 'The system performs a time check on the parked vehicle',
+        action: 'd4_step17'
+      },
+      {
+        from: 'q21',
+        to: 'q25',
+        transition: 'Time_not_exceeded',
+        description: 'The parking duration is within the allowed limit, no overstay detected',
+        action: 'd4_step18'
+      },
+      {
+        from: 'q25',
+        to: 'q26',
+        transition: 'Exit_requested',
+        description: 'The driver requests to exit the parking lot',
+        action: 'd4_step19'
+      },
+      {
+        from: 'q26',
+        to: 'q27',
+        transition: 'Payment slash fine verified',
+        description: 'The system verifies that payment and fine status are clear',
+        action: 'd4_step20'
+      },
+      {
+        from: 'q27',
+        to: 'q28',
+        transition: 'Slot_released',
+        description: 'Slot B18 is released and the vehicle exits successfully',
+        action: 'd4_step21'
+      }
+    ];
+
+    // Demo 5: Payment Failure (13 Steps)
+    const DEMO_5_STEPS = [
+      ...SHARED_BOOKING_PRE_SLOT,
+      {
+        from: 'q9',
+        to: 'q10',
+        transition: 'Time_slot_available',
+        description: 'The system confirms the fourteen thirty slot is available',
+        action: 'd5_step8'
+      },
+      {
+        from: 'q10',
+        to: 'q11',
+        transition: 'Show_location_slots',
+        description: 'The system displays slot B15 as the available location',
+        action: 'd5_step9'
+      },
+      {
+        from: 'q11',
+        to: 'q15',
+        transition: 'User_selected',
+        description: 'The driver confirms and selects slot B15',
+        action: 'd5_step10'
+      },
+      {
+        from: 'q15',
+        to: 'q16',
+        transition: 'Fee_receipt',
+        description: 'The parking fee is calculated and a receipt is generated',
+        action: 'd5_step11'
+      },
+      {
+        from: 'q16',
+        to: 'q17',
+        transition: 'Payment_monitor',
+        description: 'The payment process is initiated and monitored',
+        action: 'd5_step12'
+      },
+      {
+        from: 'q17',
+        to: 'q28',
+        transition: 'Payment_fail',
+        description: 'Payment fails, so the vehicle does not proceed to slot assignment and the process ends',
+        action: 'd5_step13'
+      }
+    ];
+
     // UI Element References
     const btnDemo1 = document.getElementById('btnDemo1');
     const btnDemo2 = document.getElementById('btnDemo2');
     const btnDemo3 = document.getElementById('btnDemo3');
+    const btnDemo4 = document.getElementById('btnDemo4');
+    const btnDemo5 = document.getElementById('btnDemo5');
     const btnReset = document.getElementById('btnReset');
 
     const statePanel = document.getElementById('statePanel');
@@ -1018,6 +1204,7 @@
     const entryGateBar = document.getElementById('entryGateBar');
     const gateClosedIcon = document.getElementById('gateClosedIcon');
     const slotB15 = document.getElementById('slot-B15');
+    const slotB18 = document.getElementById('slot-B18');
     const laneTrack = document.getElementById('laneTrack');
     const zoneEntry = document.getElementById('zoneEntry');
     const zoneScanner = document.getElementById('zoneScanner');
@@ -1056,11 +1243,11 @@
       return centerOffsetX - 38; // 38px is half car width
     }
 
-    function getSlotB15Position() {
+    function getSlotPosition(slotElement) {
       const laneRect = laneTrack.getBoundingClientRect();
-      const b15Rect = slotB15.getBoundingClientRect();
-      const left = (b15Rect.left + b15Rect.width / 2) - laneRect.left - 38;
-      const top = (b15Rect.top + b15Rect.height / 2) - laneRect.top - 38;
+      const sRect = slotElement.getBoundingClientRect();
+      const left = (sRect.left + sRect.width / 2) - laneRect.left - 38;
+      const top = (sRect.top + sRect.height / 2) - laneRect.top - 38;
       return { left, top };
     }
 
@@ -1069,6 +1256,8 @@
       btnDemo1.disabled = disabled;
       btnDemo2.disabled = disabled;
       btnDemo3.disabled = disabled;
+      btnDemo4.disabled = disabled;
+      btnDemo5.disabled = disabled;
     }
 
     // Append a line to the terminal log
@@ -1105,7 +1294,7 @@
     function showStatusBadge(icon, text, check = '', spin = false, tick = false) {
       statusBadgeIcon.textContent = icon;
       statusBadgeText.textContent = text;
-      statusBadgeCheck.innerHTML = check ? `<span class="plate-check">${check}</span>` : '';
+      statusBadgeCheck.innerHTML = check ? (check === '✗' ? `<span class="plate-error">${check}</span>` : `<span class="plate-check">${check}</span>`) : '';
       statusBadge.classList.remove('spin-icon', 'tick-icon');
       if (spin) statusBadge.classList.add('spin-icon');
       if (tick) statusBadge.classList.add('tick-icon');
@@ -1138,8 +1327,10 @@
       regexHint.style.display = 'none';
       hideStatusBadge();
 
-      // Reset slot highlights & colors
-      slotB15.classList.remove('assigned-active', 'highlight-pulsing');
+      // Reset slot highlights & colors for all slots
+      document.querySelectorAll('.slot-box').forEach(slot => {
+        slot.classList.remove('assigned-active', 'highlight-pulsing', 'unavailable-flash');
+      });
 
       // Reset gate bar & icons
       entryGateBar.classList.remove('closed');
@@ -1193,6 +1384,14 @@
         demoSteps = DEMO_3_STEPS;
         demoBorderColor = '#EA580C';
         demoTitle = 'DEMO 3: OVERSTAY FINE FULL PATH (23 STATES)';
+      } else if (demoId === 4) {
+        demoSteps = DEMO_4_STEPS;
+        demoBorderColor = '#7C3AED';
+        demoTitle = 'DEMO 4: SLOT UNAVAILABLE (21 STATES)';
+      } else if (demoId === 5) {
+        demoSteps = DEMO_5_STEPS;
+        demoBorderColor = '#991B1B';
+        demoTitle = 'DEMO 5: PAYMENT FAILURE (13 STATES)';
       }
 
       // Output fresh separator and header for this demo run
@@ -1318,8 +1517,7 @@
           slotB15.classList.add('assigned-active');
           hideStatusBadge();
 
-          // Move car into B15 slot coordinates
-          const pos = getSlotB15Position();
+          const pos = getSlotPosition(slotB15);
           carWrapper.style.left = `${pos.left}px`;
           carWrapper.style.top = `${pos.top}px`;
           break;
@@ -1479,16 +1677,165 @@
           carWrapper.style.left = `${laneRect.width + 120}px`;
           break;
         }
+
+        // ================= DEMO 4 (SLOT UNAVAILABLE, STEPS 8-21) =================
+        case 'd4_step8': { // q9 -> q12 (Time_slot_unavailable)
+          slotB15.classList.add('unavailable-flash');
+          showStatusBadge('❌', 'Slot Unavailable');
+          triggerIdle('car-idle-wiggle');
+          setTimeout(() => {
+            slotB15.classList.remove('unavailable-flash');
+            hideStatusBadge();
+          }, 1800);
+          break;
+        }
+
+        case 'd4_step9': { // q12 -> q13 (Next_time_slot_select)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'd4_step10': { // q13 -> q14 (Next_location_slot_select)
+          slotB18.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd4_step11': { // q14 -> q15 (User_selected)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd4_step12': { // q15 -> q16 (Fee_receipt)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'd4_step13': { // q16 -> q17 (Payment_monitor)
+          showStatusBadge('💳', 'Payment in progress...');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'd4_step14': { // q17 -> q18 (Payment_Done)
+          showStatusBadge('💳', 'Payment Complete', '✓');
+          triggerIdle('car-idle-bounce');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd4_step15': { // q18 -> q19 (Parking_vehicle)
+          slotB18.classList.remove('highlight-pulsing');
+          slotB18.classList.add('assigned-active');
+          hideStatusBadge();
+
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          break;
+        }
+
+        case 'd4_step16': { // q19 -> q20 (Monitoring_started)
+          showStatusBadge('⏱️', 'Monitoring Started');
+          triggerIdle('car-idle-pulse');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd4_step17': { // q20 -> q21 (Time check performed)
+          showStatusBadge('⏱️', 'Time Check OK', '', true);
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd4_step18': { // q21 -> q25 (Time_not_exceeded)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd4_step19': { // q25 -> q26 (Exit_requested)
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd4_step20': { // q26 -> q27 (Payment slash fine verified)
+          showStatusBadge('🛡️', 'Status Verified', '✓');
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd4_step21': { // q27 -> q28 (Slot_released)
+          slotB18.classList.remove('assigned-active');
+          hideStatusBadge();
+
+          const exitX = getElementCenterInLane(zoneExit);
+          carWrapper.style.top = '22px';
+          carWrapper.style.left = `${exitX}px`;
+
+          await wait(1400);
+          const laneRect = laneTrack.getBoundingClientRect();
+          carWrapper.style.left = `${laneRect.width + 120}px`;
+          break;
+        }
+
+        // ================= DEMO 5 (PAYMENT FAILURE, STEPS 8-13) =================
+        case 'd5_step8': { // q9 -> q10 (Time_slot_available)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'd5_step9': { // q10 -> q11 (Show_location_slots)
+          slotB15.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd5_step10': { // q11 -> q15 (User_selected)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd5_step11': { // q15 -> q16 (Fee_receipt)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'd5_step12': { // q16 -> q17 (Payment_monitor)
+          showStatusBadge('💳', 'Payment in progress...');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'd5_step13': { // q17 -> q28 (Payment_fail)
+          slotB15.classList.remove('highlight-pulsing');
+          showStatusBadge('💳', 'Payment Failed', '✗');
+          triggerIdle('car-idle-wiggle');
+
+          // Move car back out through the entry gate to the left (off-screen)
+          await wait(1200);
+          carWrapper.style.left = '-140px';
+          carWrapper.style.top = '22px';
+          break;
+        }
       }
     }
 
     // Recalculate car position on window resize if parked
     window.addEventListener('resize', () => {
-      if (slotB15.classList.contains('assigned-active') && isRunning) {
-        const pos = getSlotB15Position();
-        carWrapper.style.transition = 'none';
-        carWrapper.style.left = `${pos.left}px`;
-        carWrapper.style.top = `${pos.top}px`;
+      if (isRunning) {
+        if (slotB15.classList.contains('assigned-active')) {
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.transition = 'none';
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+        } else if (slotB18.classList.contains('assigned-active')) {
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.transition = 'none';
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+        }
       }
     });
   </script>
