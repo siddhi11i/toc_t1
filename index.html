@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Parking System — DFA Simulation</title>
+  <style>
+    /* Global Reset and Box Sizing */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F8FAFC;
+      color: #1E293B;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background-color: #0F1729;
+      color: #FFFFFF;
+      padding: 24px 32px;
+      text-align: left;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    /* Button Controls Row */
+    .controls-container {
+      background-color: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .demo-buttons-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.1s ease, filter 0.2s ease;
+      color: #FFFFFF;
+      text-align: center;
+      user-select: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      filter: grayscale(20%);
+    }
+
+    .btn-demo1 {
+      background-color: #2563EB;
+    }
+
+    .btn-demo2 {
+      background-color: #DC2626;
+    }
+
+    .btn-demo3 {
+      background-color: #EA580C;
+    }
+
+    .btn-reset {
+      background-color: #6B7280;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+
+    /* Main Container */
+    main {
+      padding: 24px 32px;
+      display: flex;
+      gap: 24px;
+      flex: 1;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .left-column {
+      flex: 6;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right-column {
+      flex: 4;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Parking Lot Scene */
+    .parking-lot-card {
+      background-color: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px 8px 0 0;
+      padding: 24px 16px;
+      position: relative;
+      overflow: hidden;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .parking-lot-track {
+      display: grid;
+      grid-template-columns: 110px 110px 1fr 110px;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      margin-bottom: 32px;
+      padding: 16px 8px;
+    }
+
+    /* Zone Boxes */
+    .zone-box {
+      border: 2px solid #CBD5E1;
+      border-radius: 8px;
+      background-color: #F8FAFC;
+      padding: 16px 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 140px;
+      position: relative;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .gate-bar {
+      width: 48px;
+      height: 8px;
+      border-radius: 4px;
+      background-color: #10B981;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .gate-bar.closed {
+      background-color: #EF4444;
+      transform: rotate(0deg);
+    }
+
+    .gate-status-icon {
+      font-size: 18px;
+      display: none;
+    }
+
+    .gate-status-icon.visible {
+      display: inline-block;
+    }
+
+    /* Scanner box */
+    .scanner-camera-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    /* Parking Slots Grid */
+    .slots-grid-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px dashed #CBD5E1;
+      border-radius: 8px;
+      background-color: #FAFAFA;
+    }
+
+    .slots-grid-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748B;
+      font-weight: 700;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-template-rows: repeat(2, 48px);
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .slot-box {
+      width: 60px;
+      height: 48px;
+      border: 1.5px solid #D1D5DB;
+      border-radius: 6px;
+      background-color: #FFFFFF;
+      color: #4B5563;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      position: relative;
+    }
+
+    .slot-box.assigned-active {
+      background-color: #16A34A !important;
+      color: #FFFFFF !important;
+      border-color: #15803D !important;
+    }
+
+    .slot-box.highlight-pulsing {
+      border: 2px solid #EAB308 !important;
+      box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.35);
+      animation: pulseSlot 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseSlot {
+      0%, 100% {
+        box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(234, 179, 8, 0.15);
+      }
+    }
+
+    /* Interactive Visual Overlays */
+    .lane-track {
+      position: relative;
+      height: 120px;
+      background: linear-gradient(180deg, #E2E8F0 0%, #CBD5E1 100%);
+      border-radius: 8px;
+      border: 1px solid #94A3B8;
+      display: flex;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .lane-divider {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, #FFFFFF, #FFFFFF 16px, transparent 16px, transparent 32px);
+      transform: translateY(-50%);
+    }
+
+    /* Car Sprite */
+    .car-wrapper {
+      position: absolute;
+      top: 22px;
+      left: -120px; /* Start off screen */
+      width: 76px;
+      height: 76px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: left 1.5s cubic-bezier(0.25, 1, 0.5, 1), top 1.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .car-svg {
+      width: 58px;
+      height: 34px;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+      transition: transform 0.2s ease;
+    }
+
+    /* Car Idle Animations */
+    .car-idle-bounce {
+      animation: carBounce 0.6s ease-in-out;
+    }
+
+    .car-idle-scale {
+      animation: carScale 0.6s ease-in-out;
+    }
+
+    .car-idle-wiggle {
+      animation: carWiggle 0.6s ease-in-out;
+    }
+
+    .car-idle-pulse {
+      animation: carPulse 0.6s ease-in-out;
+    }
+
+    @keyframes carBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes carScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    @keyframes carWiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    @keyframes carPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+
+    /* Floating Badges above Car */
+    .floating-badge {
+      position: absolute;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0F1729;
+      color: #FFFFFF;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: none;
+      align-items: center;
+      gap: 6px;
+      z-index: 30;
+      border: 1px solid #334155;
+    }
+
+    .floating-badge.visible {
+      display: flex;
+    }
+
+    .floating-badge.scanning::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.6), transparent);
+      animation: scanSweep 1s infinite linear;
+    }
+
+    @keyframes scanSweep {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .plate-check {
+      color: #22C55E;
+      font-size: 16px;
+      font-weight: 900;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .plate-error {
+      color: #EF4444;
+      font-size: 16px;
+      font-weight: 900;
+      animation: shake 0.4s ease-in-out;
+    }
+
+    .regex-hint {
+      position: absolute;
+      top: 100%;
+      margin-top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1E293B;
+      color: #F8FAFC;
+      border: 1px solid #EF4444;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: monospace;
+      white-space: nowrap;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .regex-mismatch {
+      color: #FF4D4D;
+      font-weight: 900;
+      text-decoration: line-through;
+      background-color: rgba(239, 68, 68, 0.25);
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    /* Multi-purpose Status Indicator */
+    .status-badge {
+      position: absolute;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #0F1729;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      display: none;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #334155;
+      white-space: nowrap;
+      z-index: 30;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .status-badge.visible {
+      display: flex;
+    }
+
+    .status-badge.spin-icon .icon-elem {
+      display: inline-block;
+      animation: spinElem 1s linear infinite;
+    }
+
+    .status-badge.tick-icon .icon-elem {
+      display: inline-block;
+      animation: tickElem 0.5s ease-in-out 2;
+    }
+
+    @keyframes spinElem {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes tickElem {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(20deg); }
+    }
+
+    @keyframes popIn {
+      0% { transform: translateX(-50%) scale(0.6); opacity: 0; }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Caption Bar */
+    .caption-bar {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #FFFFFF;
+      font-weight: 700;
+      text-align: center;
+      padding: 16px 24px;
+      font-size: 15px;
+      line-height: 1.4;
+      border-radius: 0 0 8px 8px;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Live State Panel */
+    .state-panel {
+      background-color: #F1F5F9;
+      border-left: 4px solid #CBD5E1;
+      border-radius: 0 8px 8px 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .state-code {
+      font-family: monospace;
+      font-size: 24px;
+      font-weight: 700;
+      color: #0F1729;
+    }
+
+    .transition-name {
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .state-description {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #1E293B;
+      font-weight: 500;
+    }
+
+    /* Scrolling Log Area */
+    .log-area {
+      height: 300px;
+      background-color: #111827;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+      border: 1px solid #1F2937;
+    }
+
+    .log-line {
+      color: #4ADE80;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .log-separator {
+      color: #6B7280;
+      font-weight: 700;
+      margin: 4px 0;
+      user-select: none;
+    }
+
+    /* Responsive Stacking */
+    @media (max-width: 700px) {
+      header {
+        padding: 16px 20px;
+      }
+      header h1 {
+        font-size: 22px;
+      }
+      .controls-container {
+        padding: 12px 16px;
+      }
+      main {
+        flex-direction: column;
+        padding: 16px;
+      }
+      .left-column, .right-column {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+      .parking-lot-track {
+        grid-template-columns: 80px 80px 1fr 80px;
+        gap: 8px;
+      }
+      .slots-grid {
+        grid-template-columns: repeat(5, 42px);
+        grid-template-rows: repeat(2, 38px);
+        gap: 4px;
+      }
+      .slot-box {
+        width: 42px;
+        height: 38px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <h1>Smart Parking System — DFA Simulation</h1>
+  </header>
+
+  <!-- Button Row -->
+  <div class="controls-container">
+    <div class="demo-buttons-group">
+      <button id="btnDemo1" class="btn btn-demo1" onclick="runDemo(1)">Run Demo 1: Valid Entry</button>
+      <button id="btnDemo2" class="btn btn-demo2" onclick="runDemo(2)">Run Demo 2: Invalid Plate</button>
+      <button id="btnDemo3" class="btn btn-demo3" onclick="runDemo(3)">Run Demo 3: Overstay Fine</button>
+    </div>
+    <button id="btnReset" class="btn btn-reset" onclick="resetSystem()">Reset</button>
+  </div>
+
+  <!-- Main Content Columns -->
+  <main>
+    <!-- Left Column: Visual Animation Area & Caption Bar -->
+    <div class="left-column">
+      <div class="parking-lot-card" id="parkingLotScene">
+        
+        <!-- Track Zones (Entry, Scanner, Slots, Exit) -->
+        <div class="parking-lot-track">
+          <!-- Zone 1: Entry Gate -->
+          <div class="zone-box" id="zoneEntry">
+            <span>ENTRY GATE</span>
+            <div class="gate-bar" id="entryGateBar"></div>
+            <span class="gate-status-icon" id="gateClosedIcon">⛔</span>
+          </div>
+
+          <!-- Zone 2: Scanner -->
+          <div class="zone-box" id="zoneScanner">
+            <span>SCANNER</span>
+            <span class="scanner-camera-icon">📷</span>
+          </div>
+
+          <!-- Zone 3: Parking Slots Grid -->
+          <div class="slots-grid-container" id="zoneSlots">
+            <span class="slots-grid-title">Available Slots</span>
+            <div class="slots-grid">
+              <div class="slot-box" id="slot-B11">B11</div>
+              <div class="slot-box" id="slot-B12">B12</div>
+              <div class="slot-box" id="slot-B13">B13</div>
+              <div class="slot-box" id="slot-B14">B14</div>
+              <div class="slot-box" id="slot-B15">B15</div>
+              <div class="slot-box" id="slot-B16">B16</div>
+              <div class="slot-box" id="slot-B17">B17</div>
+              <div class="slot-box" id="slot-B18">B18</div>
+              <div class="slot-box" id="slot-B19">B19</div>
+              <div class="slot-box" id="slot-B20">B20</div>
+            </div>
+          </div>
+
+          <!-- Zone 4: Exit Gate -->
+          <div class="zone-box" id="zoneExit">
+            <span>EXIT GATE</span>
+            <div class="gate-bar" id="exitGateBar"></div>
+          </div>
+        </div>
+
+        <!-- Driving Road Lane & Moving Car -->
+        <div class="lane-track" id="laneTrack">
+          <div class="lane-divider"></div>
+
+          <!-- Car Container -->
+          <div class="car-wrapper" id="carWrapper">
+            <!-- Plate / Info Badge -->
+            <div class="floating-badge" id="plateBadge">
+              <span id="plateText">MH12AB1234</span>
+              <span id="plateStatusIcon"></span>
+              <div class="regex-hint" id="regexHint" style="display: none;">
+                pattern required: two letters, two digits, two letters, four digits [MH12<span class="regex-mismatch">@</span>B1234]
+              </div>
+            </div>
+
+            <!-- Generic Status Badge for Overlays (Payment, Clock, Notification, Report) -->
+            <div class="status-badge" id="statusBadge">
+              <span class="icon-elem" id="statusBadgeIcon">⏱️</span>
+              <span id="statusBadgeText">Status</span>
+              <span id="statusBadgeCheck"></span>
+            </div>
+
+            <!-- Car Graphic SVG -->
+            <svg class="car-svg" id="carSvg" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Car Body -->
+              <rect x="10" y="24" width="100" height="24" rx="6" fill="#2563EB" />
+              <!-- Car Cabin Roof -->
+              <path d="M28 24 L42 8 L78 8 L92 24 Z" fill="#1D4ED8" />
+              <!-- Windows -->
+              <path d="M33 22 L44 11 L58 11 L58 22 Z" fill="#93C5FD" />
+              <path d="M62 22 L62 11 L76 11 L87 22 Z" fill="#93C5FD" />
+              <!-- Headlights -->
+              <circle cx="106" cy="32" r="4" fill="#FEF08A" />
+              <!-- Taillights -->
+              <circle cx="14" cy="32" r="4" fill="#EF4444" />
+              <!-- Wheels -->
+              <circle cx="32" cy="48" r="10" fill="#1E293B" />
+              <circle cx="32" cy="48" r="4" fill="#94A3B8" />
+              <circle cx="88" cy="48" r="10" fill="#1E293B" />
+              <circle cx="88" cy="48" r="4" fill="#94A3B8" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Caption Bar -->
+      <div class="caption-bar" id="captionBar">
+        System ready. Choose a demo to begin simulation.
+      </div>
+    </div>
+
+    <!-- Right Column: Live State Panel & Scrolling Log -->
+    <div class="right-column">
+      <!-- State Panel -->
+      <div class="state-panel" id="statePanel">
+        <div class="state-code" id="stateCode">State: q0</div>
+        <div class="transition-name" id="transitionName">Transition: Ready</div>
+        <div class="state-description" id="stateDescription">Select a demo button to start the DFA state machine simulation.</div>
+      </div>
+
+      <!-- Scrolling Terminal Log -->
+      <div class="log-area" id="logArea">
+        <div class="log-line">// Deterministic Finite Automaton (DFA) Log initialized.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Shared Steps 1 through 14 between Demo 1 and Demo 3
+    const SHARED_ENTRY_STEPS = [
+      {
+        from: 'q0',
+        to: 'q1',
+        transition: 'Vehicle_arrive',
+        description: 'A car has been detected approaching the entry gate',
+        action: 'shared_step1'
+      },
+      {
+        from: 'q1',
+        to: 'q2',
+        transition: 'Scan_request',
+        description: 'The scanner reads the number plate MH12AB1234',
+        action: 'shared_step2'
+      },
+      {
+        from: 'q2',
+        to: 'q3',
+        transition: 'Valid_numberplate',
+        description: 'The plate matches the required format and is accepted',
+        action: 'shared_step3'
+      },
+      {
+        from: 'q3',
+        to: 'q6',
+        transition: 'Vehicle_type_selected',
+        description: 'The vehicle type is identified as four wheeler',
+        action: 'shared_step4'
+      },
+      {
+        from: 'q6',
+        to: 'q7',
+        transition: 'Parking_type_selected',
+        description: 'The driver selects normal parking type',
+        action: 'shared_step5'
+      },
+      {
+        from: 'q7',
+        to: 'q8',
+        transition: 'Time_slot',
+        description: 'The driver selects a preferred time slot of fourteen thirty',
+        action: 'shared_step6'
+      },
+      {
+        from: 'q8',
+        to: 'q9',
+        transition: 'Time_slot_selected',
+        description: 'The selected time slot is submitted for availability checking',
+        action: 'shared_step7'
+      },
+      {
+        from: 'q9',
+        to: 'q10',
+        transition: 'Time_slot_available',
+        description: 'The system confirms the fourteen thirty slot is available',
+        action: 'shared_step8'
+      },
+      {
+        from: 'q10',
+        to: 'q11',
+        transition: 'Show_location_slots',
+        description: 'The system displays slot B15 as the available location',
+        action: 'shared_step9'
+      },
+      {
+        from: 'q11',
+        to: 'q15',
+        transition: 'User_selected',
+        description: 'The driver confirms and selects slot B15',
+        action: 'shared_step10'
+      },
+      {
+        from: 'q15',
+        to: 'q16',
+        transition: 'Fee_receipt',
+        description: 'The parking fee is calculated and a receipt is generated',
+        action: 'shared_step11'
+      },
+      {
+        from: 'q16',
+        to: 'q17',
+        transition: 'Payment_monitor',
+        description: 'The payment process is initiated and monitored',
+        action: 'shared_step12'
+      },
+      {
+        from: 'q17',
+        to: 'q18',
+        transition: 'Payment_Done',
+        description: 'Payment is completed successfully',
+        action: 'shared_step13'
+      },
+      {
+        from: 'q18',
+        to: 'q19',
+        transition: 'Parking_vehicle',
+        description: 'Slot B15 is officially assigned and a parking ticket is generated',
+        action: 'shared_step14'
+      }
+    ];
+
+    // Demo 1: Valid Entry (20 Steps)
+    const DEMO_1_STEPS = [
+      ...SHARED_ENTRY_STEPS,
+      {
+        from: 'q19',
+        to: 'q20',
+        transition: 'Monitoring_started',
+        description: 'The system begins monitoring the parking duration',
+        action: 'd1_step15'
+      },
+      {
+        from: 'q20',
+        to: 'q21',
+        transition: 'Time check performed',
+        description: 'The system performs a time check on the parked vehicle',
+        action: 'd1_step16'
+      },
+      {
+        from: 'q21',
+        to: 'q25',
+        transition: 'Time_not_exceeded',
+        description: 'The parking duration is within the allowed limit, no overstay detected',
+        action: 'd1_step17'
+      },
+      {
+        from: 'q25',
+        to: 'q26',
+        transition: 'Exit_requested',
+        description: 'The driver requests to exit the parking lot',
+        action: 'd1_step18'
+      },
+      {
+        from: 'q26',
+        to: 'q27',
+        transition: 'Payment slash fine verified',
+        description: 'The system verifies that payment and fine status are clear',
+        action: 'd1_step19'
+      },
+      {
+        from: 'q27',
+        to: 'q28',
+        transition: 'Slot_released',
+        description: 'Slot B15 is released and the vehicle exits successfully',
+        action: 'd1_step20'
+      }
+    ];
+
+    // Demo 2: Invalid Plate (5 Steps)
+    const DEMO_2_STEPS = [
+      {
+        from: 'q0',
+        to: 'q1',
+        transition: 'Vehicle_arrive',
+        description: 'A car has been detected approaching the entry gate',
+        action: 'd2_step1'
+      },
+      {
+        from: 'q1',
+        to: 'q2',
+        transition: 'Scan_request',
+        description: 'The scanner reads the number plate MH12 at B1234',
+        action: 'd2_step2'
+      },
+      {
+        from: 'q2',
+        to: 'q4',
+        transition: 'Invalid_numberplate',
+        description: 'The plate does not match the required format and is rejected',
+        action: 'd2_step3'
+      },
+      {
+        from: 'q4',
+        to: 'q5',
+        transition: 'Report_generated',
+        description: 'An incident report, ID INC001, is automatically generated',
+        action: 'd2_step4'
+      },
+      {
+        from: 'q5',
+        to: 'q28',
+        transition: 'Report_submitted',
+        description: 'The report is submitted to the controller and entry is denied',
+        action: 'd2_step5'
+      }
+    ];
+
+    // Demo 3: Overstay Fine Full Path Starting from q0 (23 Steps)
+    const DEMO_3_STEPS = [
+      ...SHARED_ENTRY_STEPS,
+      {
+        from: 'q19',
+        to: 'q20',
+        transition: 'Monitoring_started',
+        description: 'The system begins monitoring the parking duration',
+        action: 'd3_step15'
+      },
+      {
+        from: 'q20',
+        to: 'q21',
+        transition: 'Time check performed',
+        description: 'The system performs a time check on the parked vehicle',
+        action: 'd3_step16'
+      },
+      {
+        from: 'q21',
+        to: 'q22',
+        transition: 'Time_exceeded',
+        description: 'The allowed parking time has been exceeded',
+        action: 'd3_step17'
+      },
+      {
+        from: 'q22',
+        to: 'q23',
+        transition: 'Send_notification',
+        description: 'The driver is notified on their phone that a fine must be paid',
+        action: 'd3_step18'
+      },
+      {
+        from: 'q23',
+        to: 'q24',
+        transition: 'Fine_payment_initiated',
+        description: 'The fine payment process is initiated',
+        action: 'd3_step19'
+      },
+      {
+        from: 'q24',
+        to: 'q25',
+        transition: 'Fine_Payment_successful',
+        description: 'The overstay fine is paid successfully',
+        action: 'd3_step20'
+      },
+      {
+        from: 'q25',
+        to: 'q26',
+        transition: 'Exit_requested',
+        description: 'The driver requests to exit the parking lot',
+        action: 'd3_step21'
+      },
+      {
+        from: 'q26',
+        to: 'q27',
+        transition: 'Payment slash fine verified',
+        description: 'The system verifies that the fine has been paid and clears the vehicle for exit',
+        action: 'd3_step22'
+      },
+      {
+        from: 'q27',
+        to: 'q28',
+        transition: 'Slot_released',
+        description: 'Slot B15 is released and the vehicle exits successfully',
+        action: 'd3_step23'
+      }
+    ];
+
+    // UI Element References
+    const btnDemo1 = document.getElementById('btnDemo1');
+    const btnDemo2 = document.getElementById('btnDemo2');
+    const btnDemo3 = document.getElementById('btnDemo3');
+    const btnReset = document.getElementById('btnReset');
+
+    const statePanel = document.getElementById('statePanel');
+    const stateCode = document.getElementById('stateCode');
+    const transitionName = document.getElementById('transitionName');
+    const stateDescription = document.getElementById('stateDescription');
+
+    const captionBar = document.getElementById('captionBar');
+    const logArea = document.getElementById('logArea');
+
+    const carWrapper = document.getElementById('carWrapper');
+    const carSvg = document.getElementById('carSvg');
+    const plateBadge = document.getElementById('plateBadge');
+    const plateText = document.getElementById('plateText');
+    const plateStatusIcon = document.getElementById('plateStatusIcon');
+    const regexHint = document.getElementById('regexHint');
+
+    const statusBadge = document.getElementById('statusBadge');
+    const statusBadgeIcon = document.getElementById('statusBadgeIcon');
+    const statusBadgeText = document.getElementById('statusBadgeText');
+    const statusBadgeCheck = document.getElementById('statusBadgeCheck');
+
+    const entryGateBar = document.getElementById('entryGateBar');
+    const gateClosedIcon = document.getElementById('gateClosedIcon');
+    const slotB15 = document.getElementById('slot-B15');
+    const laneTrack = document.getElementById('laneTrack');
+    const zoneEntry = document.getElementById('zoneEntry');
+    const zoneScanner = document.getElementById('zoneScanner');
+    const zoneSlots = document.getElementById('zoneSlots');
+    const zoneExit = document.getElementById('zoneExit');
+
+    // State Variables
+    let currentAnimationTimeouts = [];
+    let isRunning = false;
+    let currentDemoId = null;
+
+    // Helper: Delay execution with cancellation support
+    function wait(ms) {
+      return new Promise((resolve, reject) => {
+        const id = setTimeout(resolve, ms);
+        currentAnimationTimeouts.push({ id, reject });
+      });
+    }
+
+    // Helper: Trigger idle animation on car
+    function triggerIdle(animationType = 'car-idle-bounce') {
+      carSvg.classList.remove('car-idle-bounce', 'car-idle-scale', 'car-idle-wiggle', 'car-idle-pulse');
+      // Trigger reflow to restart animation
+      void carSvg.offsetWidth;
+      carSvg.classList.add(animationType);
+      setTimeout(() => {
+        carSvg.classList.remove(animationType);
+      }, 700);
+    }
+
+    // Coordinates calculation relative to laneTrack
+    function getElementCenterInLane(el) {
+      const laneRect = laneTrack.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      const centerOffsetX = (elRect.left + elRect.width / 2) - laneRect.left;
+      return centerOffsetX - 38; // 38px is half car width
+    }
+
+    function getSlotB15Position() {
+      const laneRect = laneTrack.getBoundingClientRect();
+      const b15Rect = slotB15.getBoundingClientRect();
+      const left = (b15Rect.left + b15Rect.width / 2) - laneRect.left - 38;
+      const top = (b15Rect.top + b15Rect.height / 2) - laneRect.top - 38;
+      return { left, top };
+    }
+
+    // Set buttons active/disabled state
+    function setButtonsDisabled(disabled) {
+      btnDemo1.disabled = disabled;
+      btnDemo2.disabled = disabled;
+      btnDemo3.disabled = disabled;
+    }
+
+    // Append a line to the terminal log
+    function appendLog(lineText, isSeparator = false) {
+      const lineDiv = document.createElement('div');
+      if (isSeparator) {
+        lineDiv.className = 'log-separator';
+        lineDiv.textContent = '--------------------------------------------------------------------------------';
+      } else {
+        lineDiv.className = 'log-line';
+        lineDiv.textContent = lineText;
+      }
+      logArea.appendChild(lineDiv);
+      logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    // Update Live State Panel, Caption Bar, and Terminal Log
+    function updateStateAndLog(from, to, transition, description, borderColor) {
+      stateCode.textContent = `State: ${to}`;
+      transitionName.textContent = `Transition: ${transition}`;
+      stateDescription.textContent = description;
+
+      if (borderColor) {
+        statePanel.style.borderLeftColor = borderColor;
+      }
+
+      captionBar.textContent = description;
+
+      const logEntry = `${from} -> ${to} | ${transition} | ${description}`;
+      appendLog(logEntry);
+    }
+
+    // Show / Hide Status Badge Helper
+    function showStatusBadge(icon, text, check = '', spin = false, tick = false) {
+      statusBadgeIcon.textContent = icon;
+      statusBadgeText.textContent = text;
+      statusBadgeCheck.innerHTML = check ? `<span class="plate-check">${check}</span>` : '';
+      statusBadge.classList.remove('spin-icon', 'tick-icon');
+      if (spin) statusBadge.classList.add('spin-icon');
+      if (tick) statusBadge.classList.add('tick-icon');
+      statusBadge.classList.add('visible');
+    }
+
+    function hideStatusBadge() {
+      statusBadge.classList.remove('visible', 'spin-icon', 'tick-icon');
+    }
+
+    // Reset All Visuals
+    function resetVisuals() {
+      // Clear all active timeouts
+      currentAnimationTimeouts.forEach(item => {
+        clearTimeout(item.id);
+        try { item.reject(new Error('Reset')); } catch (e) {}
+      });
+      currentAnimationTimeouts = [];
+
+      // Reset car position
+      carWrapper.style.transition = 'none';
+      carWrapper.style.left = '-120px';
+      carWrapper.style.top = '22px';
+      carWrapper.style.opacity = '1';
+
+      // Reset indicators & badges
+      plateBadge.classList.remove('visible', 'scanning');
+      plateBadge.style.display = 'none';
+      plateStatusIcon.innerHTML = '';
+      regexHint.style.display = 'none';
+      hideStatusBadge();
+
+      // Reset slot highlights & colors
+      slotB15.classList.remove('assigned-active', 'highlight-pulsing');
+
+      // Reset gate bar & icons
+      entryGateBar.classList.remove('closed');
+      gateClosedIcon.classList.remove('visible');
+
+      // Reset animations on car
+      carSvg.classList.remove('car-idle-bounce', 'car-idle-scale', 'car-idle-wiggle', 'car-idle-pulse');
+    }
+
+    // Reset button handler
+    function resetSystem() {
+      isRunning = false;
+      currentDemoId = null;
+      resetVisuals();
+      setButtonsDisabled(false);
+
+      statePanel.style.borderLeftColor = '#CBD5E1';
+      stateCode.textContent = 'State: q0';
+      transitionName.textContent = 'Transition: Ready';
+      stateDescription.textContent = 'Select a demo button to start the DFA state machine simulation.';
+      captionBar.textContent = 'System ready. Choose a demo to begin simulation.';
+
+      // Terminal log is NOT cleared per requirements, but we add a visual separator
+      appendLog('[SYSTEM RESET] State machine restored to initial state q0.');
+      appendLog('', true);
+    }
+
+    // Main Demo Execution Engine
+    async function runDemo(demoId) {
+      if (isRunning) return;
+
+      isRunning = true;
+      currentDemoId = demoId;
+      setButtonsDisabled(true);
+      resetVisuals();
+
+      // Demo specific configurations
+      let demoSteps = [];
+      let demoBorderColor = '#2563EB';
+      let demoTitle = '';
+
+      if (demoId === 1) {
+        demoSteps = DEMO_1_STEPS;
+        demoBorderColor = '#2563EB';
+        demoTitle = 'DEMO 1: VALID ENTRY (20 STATES)';
+      } else if (demoId === 2) {
+        demoSteps = DEMO_2_STEPS;
+        demoBorderColor = '#DC2626';
+        demoTitle = 'DEMO 2: INVALID PLATE (5 STATES)';
+      } else if (demoId === 3) {
+        demoSteps = DEMO_3_STEPS;
+        demoBorderColor = '#EA580C';
+        demoTitle = 'DEMO 3: OVERSTAY FINE FULL PATH (23 STATES)';
+      }
+
+      // Output fresh separator and header for this demo run
+      appendLog('', true);
+      appendLog(`>>> STARTING ${demoTitle} <<<`);
+
+      try {
+        // Execute every single step in strict sequence from q0
+        for (let i = 0; i < demoSteps.length; i++) {
+          if (!isRunning) break;
+
+          const step = demoSteps[i];
+
+          // 1. Update State Panel, Caption, and Log in perfect sync
+          updateStateAndLog(step.from, step.to, step.transition, step.description, demoBorderColor);
+
+          // 2. Perform step-specific animation
+          await handleStepAction(step.action);
+
+          // 3. Step hold duration ~2.2 - 2.5 seconds
+          await wait(2300);
+        }
+
+      } catch (err) {
+        console.log('Demo stopped:', err);
+      } finally {
+        isRunning = false;
+        setButtonsDisabled(false);
+      }
+    }
+
+    // Action dispatcher for all distinct animation steps
+    async function handleStepAction(action) {
+      // Re-enable smooth transition for standard movement
+      carWrapper.style.transition = 'left 1.4s cubic-bezier(0.25, 1, 0.5, 1), top 1.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease';
+
+      switch (action) {
+        // ================= SHARED ENTRY STEPS (1-14) =================
+        case 'shared_step1': { // q0 -> q1 (Vehicle_arrive)
+          const targetX = getElementCenterInLane(zoneEntry);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          break;
+        }
+
+        case 'shared_step2': { // q1 -> q2 (Scan_request)
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+
+          plateText.textContent = 'MH12AB1234';
+          plateStatusIcon.innerHTML = '';
+          regexHint.style.display = 'none';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible', 'scanning');
+          break;
+        }
+
+        case 'shared_step3': { // q2 -> q3 (Valid_numberplate)
+          plateBadge.classList.remove('scanning');
+          plateStatusIcon.innerHTML = '<span class="plate-check">✓</span>';
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'shared_step4': { // q3 -> q6 (Vehicle_type_selected)
+          plateBadge.style.display = 'none';
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'shared_step5': { // q6 -> q7 (Parking_type_selected)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'shared_step6': { // q7 -> q8 (Time_slot)
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'shared_step7': { // q8 -> q9 (Time_slot_selected)
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'shared_step8': { // q9 -> q10 (Time_slot_available)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'shared_step9': { // q10 -> q11 (Show_location_slots)
+          slotB15.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'shared_step10': { // q11 -> q15 (User_selected)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'shared_step11': { // q15 -> q16 (Fee_receipt)
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'shared_step12': { // q16 -> q17 (Payment_monitor)
+          showStatusBadge('💳', 'Payment in progress...');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'shared_step13': { // q17 -> q18 (Payment_Done)
+          showStatusBadge('💳', 'Payment Complete', '✓');
+          triggerIdle('car-idle-bounce');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'shared_step14': { // q18 -> q19 (Parking_vehicle)
+          slotB15.classList.remove('highlight-pulsing');
+          slotB15.classList.add('assigned-active');
+          hideStatusBadge();
+
+          // Move car into B15 slot coordinates
+          const pos = getSlotB15Position();
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          break;
+        }
+
+        // ================= DEMO 1 (STEPS 15-20) =================
+        case 'd1_step15': { // q19 -> q20 (Monitoring_started)
+          showStatusBadge('⏱️', 'Monitoring Started');
+          triggerIdle('car-idle-pulse');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd1_step16': { // q20 -> q21 (Time check performed)
+          showStatusBadge('⏱️', 'Time Check OK', '', false, true);
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd1_step17': { // q21 -> q25 (Time_not_exceeded)
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd1_step18': { // q25 -> q26 (Exit_requested)
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd1_step19': { // q26 -> q27 (Payment slash fine verified)
+          showStatusBadge('🛡️', 'Status Verified', '✓');
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd1_step20': { // q27 -> q28 (Slot_released)
+          slotB15.classList.remove('assigned-active');
+          hideStatusBadge();
+
+          const exitX = getElementCenterInLane(zoneExit);
+          carWrapper.style.top = '22px';
+          carWrapper.style.left = `${exitX}px`;
+
+          await wait(1400);
+          const laneRect = laneTrack.getBoundingClientRect();
+          carWrapper.style.left = `${laneRect.width + 120}px`;
+          break;
+        }
+
+        // ================= DEMO 2 (5 STEPS) =================
+        case 'd2_step1': { // q0 -> q1 (Vehicle_arrive)
+          const targetX = getElementCenterInLane(zoneEntry);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          break;
+        }
+
+        case 'd2_step2': { // q1 -> q2 (Scan_request)
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+
+          plateText.textContent = 'MH12@B1234';
+          plateStatusIcon.innerHTML = '';
+          regexHint.style.display = 'none';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible', 'scanning');
+          break;
+        }
+
+        case 'd2_step3': { // q2 -> q4 (Invalid_numberplate)
+          plateBadge.classList.remove('scanning');
+          plateStatusIcon.innerHTML = '<span class="plate-error">✗</span>';
+          regexHint.style.display = 'block';
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd2_step4': { // q4 -> q5 (Report_generated)
+          showStatusBadge('📄', 'Incident Report: INC001');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd2_step5': { // q5 -> q28 (Report_submitted)
+          entryGateBar.classList.add('closed');
+          gateClosedIcon.classList.add('visible');
+          showStatusBadge('⛔', 'Entry Denied');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        // ================= DEMO 3 OVERSTAY DIVERGENCE (STEPS 15-23) =================
+        case 'd3_step15': { // q19 -> q20 (Monitoring_started)
+          showStatusBadge('⏱️', 'Monitoring Duration');
+          triggerIdle('car-idle-bounce');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd3_step16': { // q20 -> q21 (Time check performed)
+          showStatusBadge('⏱️', 'Checking time...', '', true);
+          triggerIdle('car-idle-pulse');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd3_step17': { // q21 -> q22 (Time_exceeded)
+          showStatusBadge('⚠️', 'Time Exceeded!');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'd3_step18': { // q22 -> q23 (Send_notification)
+          showStatusBadge('🔔', 'Fine Notice Sent');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd3_step19': { // q23 -> q24 (Fine_payment_initiated)
+          showStatusBadge('💳', 'Paying Fine...');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'd3_step20': { // q24 -> q25 (Fine_Payment_successful)
+          showStatusBadge('💳', 'Fine Paid', '✓');
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd3_step21': { // q25 -> q26 (Exit_requested)
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'd3_step22': { // q26 -> q27 (Payment slash fine verified)
+          showStatusBadge('🛡️', 'Fine Cleared', '✓');
+          triggerIdle('car-idle-scale');
+          setTimeout(hideStatusBadge, 1800);
+          break;
+        }
+
+        case 'd3_step23': { // q27 -> q28 (Slot_released)
+          slotB15.classList.remove('assigned-active');
+          hideStatusBadge();
+
+          const exitX = getElementCenterInLane(zoneExit);
+          carWrapper.style.top = '22px';
+          carWrapper.style.left = `${exitX}px`;
+
+          await wait(1400);
+          const laneRect = laneTrack.getBoundingClientRect();
+          carWrapper.style.left = `${laneRect.width + 120}px`;
+          break;
+        }
+      }
+    }
+
+    // Recalculate car position on window resize if parked
+    window.addEventListener('resize', () => {
+      if (slotB15.classList.contains('assigned-active') && isRunning) {
+        const pos = getSlotB15Position();
+        carWrapper.style.transition = 'none';
+        carWrapper.style.left = `${pos.left}px`;
+        carWrapper.style.top = `${pos.top}px`;
+      }
+    });
+  </script>
+</body>
+</html>
