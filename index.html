@@ -79,36 +79,100 @@
     }
 
     .btn:disabled {
-      opacity: 0.55;
+      opacity: 0.45;
       cursor: not-allowed;
       filter: grayscale(20%);
     }
 
-    .btn-demo1 {
-      background-color: #2563EB;
-    }
-
-    .btn-demo2 {
-      background-color: #DC2626;
-    }
-
-    .btn-demo3 {
-      background-color: #EA580C;
-    }
-
-    .btn-demo4 {
-      background-color: #7C3AED;
-    }
-
-    .btn-demo5 {
-      background-color: #991B1B;
-    }
+    .btn-demo1 { background-color: #2563EB; }
+    .btn-demo2 { background-color: #DC2626; }
+    .btn-demo3 { background-color: #EA580C; }
+    .btn-demo4 { background-color: #7C3AED; }
+    .btn-demo5 { background-color: #991B1B; }
 
     .btn-reset {
       background-color: #6B7280;
       padding: 10px 18px;
       font-size: 14px;
       border-radius: 8px;
+    }
+
+    /* Playback Control Bar */
+    .playback-bar {
+      background-color: #F8FAFC;
+      border-bottom: 1px solid #CBD5E1;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .playback-btn {
+      background-color: #1E293B;
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease, filter 0.2s ease, transform 0.1s ease;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 100px;
+    }
+
+    .playback-btn:hover:not(:disabled) {
+      background-color: #334155;
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .playback-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .playback-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background-color: #475569;
+    }
+
+    .speed-dropdown {
+      background-color: #1E293B;
+      color: #FFFFFF;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .speed-dropdown:hover {
+      background-color: #334155;
+    }
+
+    .speed-dropdown option {
+      background-color: #1E293B;
+      color: #FFFFFF;
+    }
+
+    .step-counter {
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: #334155;
+      padding: 6px 12px;
+      background-color: #E2E8F0;
+      border-radius: 6px;
+      user-select: none;
+      margin-left: 4px;
     }
 
     /* Main Container */
@@ -272,12 +336,8 @@
     }
 
     @keyframes pulseSlot {
-      0%, 100% {
-        box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4);
-      }
-      50% {
-        box-shadow: 0 0 0 8px rgba(234, 179, 8, 0.15);
-      }
+      0%, 100% { box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(234, 179, 8, 0.15); }
     }
 
     @keyframes shakeSlot {
@@ -319,7 +379,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: left 1.5s cubic-bezier(0.25, 1, 0.5, 1), top 1.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+      transition: left 2.0s cubic-bezier(0.25, 1, 0.5, 1), top 2.0s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
       z-index: 20;
       pointer-events: none;
     }
@@ -332,21 +392,10 @@
     }
 
     /* Car Idle Animations */
-    .car-idle-bounce {
-      animation: carBounce 0.6s ease-in-out;
-    }
-
-    .car-idle-scale {
-      animation: carScale 0.6s ease-in-out;
-    }
-
-    .car-idle-wiggle {
-      animation: carWiggle 0.6s ease-in-out;
-    }
-
-    .car-idle-pulse {
-      animation: carPulse 0.6s ease-in-out;
-    }
+    .car-idle-bounce { animation: carBounce 0.8s ease-in-out; }
+    .car-idle-scale { animation: carScale 0.8s ease-in-out; }
+    .car-idle-wiggle { animation: carWiggle 0.8s ease-in-out; }
+    .car-idle-pulse { animation: carPulse 0.8s ease-in-out; }
 
     @keyframes carBounce {
       0%, 100% { transform: translateY(0); }
@@ -482,19 +531,9 @@
       animation: spinElem 1s linear infinite;
     }
 
-    .status-badge.tick-icon .icon-elem {
-      display: inline-block;
-      animation: tickElem 0.5s ease-in-out 2;
-    }
-
     @keyframes spinElem {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-
-    @keyframes tickElem {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(20deg); }
     }
 
     @keyframes popIn {
@@ -506,6 +545,11 @@
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-4px); }
       40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Freeze Animations when Paused */
+    .animations-paused * {
+      animation-play-state: paused !important;
     }
 
     /* Caption Bar */
@@ -596,7 +640,7 @@
       header h1 {
         font-size: 22px;
       }
-      .controls-container {
+      .controls-container, .playback-bar {
         padding: 12px 16px;
       }
       main {
@@ -634,13 +678,27 @@
   <!-- Button Row -->
   <div class="controls-container">
     <div class="demo-buttons-group">
-      <button id="btnDemo1" class="btn btn-demo1" onclick="runDemo(1)">Run Demo 1: Valid Entry</button>
-      <button id="btnDemo2" class="btn btn-demo2" onclick="runDemo(2)">Run Demo 2: Invalid Plate</button>
-      <button id="btnDemo3" class="btn btn-demo3" onclick="runDemo(3)">Run Demo 3: Overstay Fine</button>
-      <button id="btnDemo4" class="btn btn-demo4" onclick="runDemo(4)">Run Demo 4: Slot Unavailable</button>
-      <button id="btnDemo5" class="btn btn-demo5" onclick="runDemo(5)">Run Demo 5: Payment Failure</button>
+      <button id="btnDemo1" class="btn btn-demo1" onclick="startDemo(1)">Run Demo 1: Valid Entry</button>
+      <button id="btnDemo2" class="btn btn-demo2" onclick="startDemo(2)">Run Demo 2: Invalid Plate</button>
+      <button id="btnDemo3" class="btn btn-demo3" onclick="startDemo(3)">Run Demo 3: Overstay Fine</button>
+      <button id="btnDemo4" class="btn btn-demo4" onclick="startDemo(4)">Run Demo 4: Slot Unavailable</button>
+      <button id="btnDemo5" class="btn btn-demo5" onclick="startDemo(5)">Run Demo 5: Payment Failure</button>
     </div>
     <button id="btnReset" class="btn btn-reset" onclick="resetSystem()">Reset</button>
+  </div>
+
+  <!-- Playback Control Bar -->
+  <div class="playback-bar" id="playbackBar">
+    <button id="btnPrevStep" class="playback-btn" onclick="previousStep()" disabled>Previous Step</button>
+    <button id="btnPlayPause" class="playback-btn" onclick="togglePlayPause()" disabled>Play</button>
+    <button id="btnNextStep" class="playback-btn" onclick="nextStep()" disabled>Next Step</button>
+    <select id="speedSelect" class="speed-dropdown" onchange="handleSpeedChange()">
+      <option value="0.5">0.5x (slowest)</option>
+      <option value="1" selected>1x (default)</option>
+      <option value="1.5">1.5x</option>
+      <option value="2">2x</option>
+    </select>
+    <span id="stepCounter" class="step-counter">Step -- of --</span>
   </div>
 
   <!-- Main Content Columns -->
@@ -764,35 +822,35 @@
         to: 'q1',
         transition: 'Vehicle_arrive',
         description: 'A car has been detected approaching the entry gate',
-        action: 'shared_step1'
+        visual: 'move_entry'
       },
       {
         from: 'q1',
         to: 'q2',
         transition: 'Scan_request',
         description: 'The scanner reads the number plate MH12AB1234',
-        action: 'shared_step2'
+        visual: 'scan_valid'
       },
       {
         from: 'q2',
         to: 'q3',
         transition: 'Valid_numberplate',
         description: 'The plate matches the required format and is accepted',
-        action: 'shared_step3'
+        visual: 'plate_ok'
       },
       {
         from: 'q3',
         to: 'q8',
         transition: 'Time_slot',
         description: 'The driver selects a preferred time slot of fourteen thirty',
-        action: 'shared_step4'
+        visual: 'idle_bounce_scanner'
       },
       {
         from: 'q8',
         to: 'q9',
         transition: 'Time_slot_selected',
         description: 'The selected time slot is submitted for availability checking',
-        action: 'shared_step5'
+        visual: 'idle_pulse_scanner'
       }
     ];
 
@@ -803,49 +861,49 @@
         to: 'q10',
         transition: 'Time_slot_available',
         description: 'The system confirms the fourteen thirty slot is available',
-        action: 'shared_step6'
+        visual: 'idle_scale_scanner'
       },
       {
         from: 'q10',
         to: 'q11',
         transition: 'Show_location_slots',
         description: 'The system displays slot B15 as the available location',
-        action: 'shared_step7'
+        visual: 'highlight_b15'
       },
       {
         from: 'q11',
         to: 'q15',
         transition: 'User_selected',
         description: 'The driver confirms and selects slot B15',
-        action: 'shared_step8'
+        visual: 'confirm_b15'
       },
       {
         from: 'q15',
         to: 'q16',
         transition: 'Fee_receipt',
         description: 'The parking fee is calculated based on duration and a receipt is generated',
-        action: 'shared_step9'
+        visual: 'fee_receipt'
       },
       {
         from: 'q16',
         to: 'q17',
         transition: 'Payment_monitor',
         description: 'The payment process is initiated and monitored',
-        action: 'shared_step10'
+        visual: 'payment_monitor'
       },
       {
         from: 'q17',
         to: 'q18',
         transition: 'Payment_Done',
         description: 'Payment is completed successfully',
-        action: 'shared_step11'
+        visual: 'payment_done'
       },
       {
         from: 'q18',
         to: 'q19',
         transition: 'Parking_vehicle',
         description: 'Slot B15 is assigned and a parking ticket is generated',
-        action: 'shared_step12'
+        visual: 'park_b15'
       }
     ];
 
@@ -858,42 +916,42 @@
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd1_step13'
+        visual: 'monitoring_b15'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
         description: 'The system performs a time check on the parked car',
-        action: 'd1_step14'
+        visual: 'timecheck_ok_b15'
       },
       {
         from: 'q21',
         to: 'q25',
         transition: 'Time_not_exceeded',
         description: 'The parking duration is within the allowed limit, no overstay detected',
-        action: 'd1_step15'
+        visual: 'idle_wiggle_b15'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd1_step16'
+        visual: 'idle_bounce_b15'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
         description: 'The system verifies that payment and fine status are clear',
-        action: 'd1_step17'
+        visual: 'status_verified_b15'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
         description: 'Slot B15 is released and the car exits successfully',
-        action: 'd1_step18'
+        visual: 'exit_b15'
       }
     ];
 
@@ -904,35 +962,35 @@
         to: 'q1',
         transition: 'Vehicle_arrive',
         description: 'A car has been detected approaching the entry gate',
-        action: 'd2_step1'
+        visual: 'move_entry'
       },
       {
         from: 'q1',
         to: 'q2',
         transition: 'Scan_request',
         description: 'The scanner reads the number plate MH12 at B1234',
-        action: 'd2_step2'
+        visual: 'scan_invalid'
       },
       {
         from: 'q2',
         to: 'q4',
         transition: 'Invalid_numberplate',
         description: 'The plate does not match the required format and is rejected',
-        action: 'd2_step3'
+        visual: 'plate_rejected'
       },
       {
         from: 'q4',
         to: 'q5',
         transition: 'Report_generated',
         description: 'An incident report, ID INC001, is automatically generated',
-        action: 'd2_step4'
+        visual: 'report_inc001'
       },
       {
         from: 'q5',
         to: 'q28',
         transition: 'Report_submitted',
         description: 'The report is submitted to the controller and entry is denied',
-        action: 'd2_step5'
+        visual: 'entry_denied'
       }
     ];
 
@@ -945,63 +1003,63 @@
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd3_step13'
+        visual: 'monitoring_b15'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
         description: 'The system performs a time check on the parked car',
-        action: 'd3_step14'
+        visual: 'timecheck_spin_b15'
       },
       {
         from: 'q21',
         to: 'q22',
         transition: 'Time_exceeded',
         description: 'The allowed parking time has been exceeded and an overstay fine is generated',
-        action: 'd3_step15'
+        visual: 'time_exceeded_b15'
       },
       {
         from: 'q22',
         to: 'q23',
         transition: 'Send_notification',
         description: 'The driver is notified on their phone that a fine must be paid',
-        action: 'd3_step16'
+        visual: 'fine_notice_b15'
       },
       {
         from: 'q23',
         to: 'q24',
         transition: 'Fine_payment_initiated',
         description: 'The fine payment process is initiated',
-        action: 'd3_step17'
+        visual: 'fine_paying_b15'
       },
       {
         from: 'q24',
         to: 'q25',
         transition: 'Fine_Payment_successful',
         description: 'The overstay fine is paid successfully',
-        action: 'd3_step18'
+        visual: 'fine_paid_b15'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd3_step19'
+        visual: 'idle_bounce_b15'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
         description: 'The system verifies that the fine has been paid and clears the car for exit',
-        action: 'd3_step20'
+        visual: 'fine_cleared_b15'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
         description: 'Slot B15 is released and the car exits successfully',
-        action: 'd3_step21'
+        visual: 'exit_b15'
       }
     ];
 
@@ -1013,105 +1071,104 @@
         to: 'q12',
         transition: 'Time_slot_unavailable',
         description: 'The requested fourteen thirty slot is not available',
-        action: 'd4_step6'
+        visual: 'slot_unavailable_b15'
       },
       {
         from: 'q12',
         to: 'q13',
         transition: 'Next_time_slot_select',
         description: 'The system displays the next available slots to the driver',
-        action: 'd4_step7'
+        visual: 'idle_scale_scanner'
       },
       {
         from: 'q13',
         to: 'q14',
         transition: 'Next_location_slot_select',
         description: 'The driver selects an alternative slot, B18',
-        action: 'd4_step8'
+        visual: 'highlight_b18'
       },
       {
         from: 'q14',
         to: 'q15',
         transition: 'User_selected',
         description: 'The driver decides to continue with slot B18',
-        action: 'd4_step9'
+        visual: 'confirm_b18'
       },
       {
         from: 'q15',
         to: 'q16',
         transition: 'Fee_receipt',
         description: 'The parking fee is calculated based on duration and a receipt is generated',
-        action: 'd4_step10'
+        visual: 'fee_receipt'
       },
       {
         from: 'q16',
         to: 'q17',
         transition: 'Payment_monitor',
         description: 'The payment process is initiated and monitored',
-        action: 'd4_step11'
+        visual: 'payment_monitor'
       },
       {
         from: 'q17',
         to: 'q18',
         transition: 'Payment_Done',
         description: 'Payment is completed successfully',
-        action: 'd4_step12'
+        visual: 'payment_done'
       },
       {
         from: 'q18',
         to: 'q19',
         transition: 'Parking_vehicle',
         description: 'Slot B18 is assigned and a parking ticket is generated',
-        action: 'd4_step13'
+        visual: 'park_b18'
       },
       {
         from: 'q19',
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd4_step14'
+        visual: 'monitoring_b18'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
         description: 'The system performs a time check on the parked car',
-        action: 'd4_step15'
+        visual: 'timecheck_ok_b18'
       },
       {
         from: 'q21',
         to: 'q25',
         transition: 'Time_not_exceeded',
         description: 'The parking duration is within the allowed limit, no overstay detected',
-        action: 'd4_step16'
+        visual: 'idle_wiggle_b18'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd4_step17'
+        visual: 'idle_bounce_b18'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
         description: 'The system verifies that payment and fine status are clear',
-        action: 'd4_step18'
+        visual: 'status_verified_b18'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
         description: 'Slot B18 is released and the car exits successfully',
-        action: 'd4_step19'
+        visual: 'exit_b18'
       }
     ];
 
     // Demo 5: Payment Failure (11 Steps)
     const DEMO_5_STEPS = [
       ...SHARED_STEPS_1_TO_5,
-      // Steps 6 through 10 identical to Demo 1
       SHARED_STEPS_6_TO_12[0], // q9 -> q10 (Time_slot_available)
       SHARED_STEPS_6_TO_12[1], // q10 -> q11 (Show_location_slots)
       SHARED_STEPS_6_TO_12[2], // q11 -> q15 (User_selected)
@@ -1122,9 +1179,18 @@
         to: 'q28',
         transition: 'Payment_fail',
         description: 'Payment fails, so the car does not proceed to slot assignment and the process ends',
-        action: 'd5_step11'
+        visual: 'payment_fail_reverse'
       }
     ];
+
+    // Map of Demo Configuration
+    const DEMO_CONFIGS = {
+      1: { steps: DEMO_1_STEPS, color: '#2563EB', title: 'STARTING DEMO 1: VALID ENTRY (18 STEPS)' },
+      2: { steps: DEMO_2_STEPS, color: '#DC2626', title: 'STARTING DEMO 2: INVALID PLATE (5 STEPS)' },
+      3: { steps: DEMO_3_STEPS, color: '#EA580C', title: 'STARTING DEMO 3: OVERSTAY FINE (21 STEPS)' },
+      4: { steps: DEMO_4_STEPS, color: '#7C3AED', title: 'STARTING DEMO 4: SLOT UNAVAILABLE (19 STEPS)' },
+      5: { steps: DEMO_5_STEPS, color: '#991B1B', title: 'STARTING DEMO 5: PAYMENT FAILURE (11 STEPS)' }
+    };
 
     // UI Element References
     const btnDemo1 = document.getElementById('btnDemo1');
@@ -1133,6 +1199,12 @@
     const btnDemo4 = document.getElementById('btnDemo4');
     const btnDemo5 = document.getElementById('btnDemo5');
     const btnReset = document.getElementById('btnReset');
+
+    const btnPrevStep = document.getElementById('btnPrevStep');
+    const btnPlayPause = document.getElementById('btnPlayPause');
+    const btnNextStep = document.getElementById('btnNextStep');
+    const speedSelect = document.getElementById('speedSelect');
+    const stepCounter = document.getElementById('stepCounter');
 
     const statePanel = document.getElementById('statePanel');
     const stateCode = document.getElementById('stateCode');
@@ -1164,28 +1236,22 @@
     const zoneSlots = document.getElementById('zoneSlots');
     const zoneExit = document.getElementById('zoneExit');
 
-    // State Variables
-    let currentAnimationTimeouts = [];
-    let isRunning = false;
+    // Engine State
     let currentDemoId = null;
+    let currentStepIndex = -1;
+    let isPlaying = false;
+    let isPaused = false;
+    let stepTimerId = null;
+    let logLineElements = []; // Tracks log lines for accurate rewind
 
-    // Helper: Delay execution with cancellation support
-    function wait(ms) {
-      return new Promise((resolve, reject) => {
-        const id = setTimeout(resolve, ms);
-        currentAnimationTimeouts.push({ id, reject });
-      });
+    // Helper: Calculate step duration based on selected speed
+    function getStepDuration() {
+      const speed = parseFloat(speedSelect.value) || 1.0;
+      return 5000 / speed;
     }
 
-    // Helper: Trigger idle animation on car
-    function triggerIdle(animationType = 'car-idle-bounce') {
-      carSvg.classList.remove('car-idle-bounce', 'car-idle-scale', 'car-idle-wiggle', 'car-idle-pulse');
-      // Trigger reflow to restart animation
-      void carSvg.offsetWidth;
-      carSvg.classList.add(animationType);
-      setTimeout(() => {
-        carSvg.classList.remove(animationType);
-      }, 700);
+    function handleSpeedChange() {
+      // Speed takes effect on the next step transition naturally
     }
 
     // Coordinates calculation relative to laneTrack
@@ -1205,12 +1271,54 @@
     }
 
     // Set buttons active/disabled state
-    function setButtonsDisabled(disabled) {
+    function setDemoButtonsDisabled(disabled) {
       btnDemo1.disabled = disabled;
       btnDemo2.disabled = disabled;
       btnDemo3.disabled = disabled;
       btnDemo4.disabled = disabled;
       btnDemo5.disabled = disabled;
+    }
+
+    function updatePlaybackControlsUI() {
+      if (!currentDemoId) {
+        btnPlayPause.disabled = true;
+        btnPlayPause.textContent = 'Play';
+        btnPrevStep.disabled = true;
+        btnNextStep.disabled = true;
+        stepCounter.textContent = 'Step -- of --';
+        return;
+      }
+
+      const totalSteps = DEMO_CONFIGS[currentDemoId].steps.length;
+      stepCounter.textContent = `Step ${currentStepIndex + 1} of ${totalSteps}`;
+
+      if (isPlaying) {
+        btnPlayPause.disabled = false;
+        btnPlayPause.textContent = 'Pause';
+        btnPrevStep.disabled = true;
+        btnNextStep.disabled = true;
+      } else if (isPaused) {
+        btnPlayPause.disabled = false;
+        btnPlayPause.textContent = 'Play';
+        btnPrevStep.disabled = (currentStepIndex <= 0);
+        btnNextStep.disabled = (currentStepIndex >= totalSteps - 1);
+      } else {
+        // Finished
+        btnPlayPause.disabled = true;
+        btnPlayPause.textContent = 'Play';
+        btnPrevStep.disabled = (currentStepIndex <= 0);
+        btnNextStep.disabled = true;
+      }
+    }
+
+    // Helper: Trigger idle animation on car
+    function triggerIdle(animationType = 'car-idle-bounce') {
+      carSvg.classList.remove('car-idle-bounce', 'car-idle-scale', 'car-idle-wiggle', 'car-idle-pulse');
+      void carSvg.offsetWidth;
+      carSvg.classList.add(animationType);
+      setTimeout(() => {
+        carSvg.classList.remove(animationType);
+      }, 800);
     }
 
     // Append a line to the terminal log
@@ -1225,47 +1333,599 @@
       }
       logArea.appendChild(lineDiv);
       logArea.scrollTop = logArea.scrollHeight;
+      return lineDiv;
     }
 
-    // Update Live State Panel, Caption Bar, and Terminal Log
-    function updateStateAndLog(from, to, transition, description, borderColor) {
-      stateCode.textContent = `State: ${to}`;
-      transitionName.textContent = `Transition: ${transition}`;
-      stateDescription.textContent = description;
+    // Pure State Renderer based on stepIndex
+    function renderStep(demoId, index, isMovingForward = true) {
+      const config = DEMO_CONFIGS[demoId];
+      const step = config.steps[index];
 
-      if (borderColor) {
-        statePanel.style.borderLeftColor = borderColor;
+      // Update State Panel
+      stateCode.textContent = `State: ${step.to}`;
+      transitionName.textContent = `Transition: ${step.transition}`;
+      stateDescription.textContent = step.description;
+      statePanel.style.borderLeftColor = config.color;
+
+      // Update Caption Bar
+      captionBar.textContent = step.description;
+
+      // Update Log
+      if (isMovingForward) {
+        const logEntry = `${step.from} -> ${step.to} | ${step.transition} | ${step.description}`;
+        const logElem = appendLog(logEntry);
+        logLineElements.push(logElem);
       }
 
-      captionBar.textContent = description;
+      // Reset base visual elements first
+      plateBadge.classList.remove('visible', 'scanning');
+      plateBadge.style.display = 'none';
+      plateStatusIcon.innerHTML = '';
+      regexHint.style.display = 'none';
 
-      const logEntry = `${from} -> ${to} | ${transition} | ${description}`;
-      appendLog(logEntry);
-    }
+      statusBadge.classList.remove('visible', 'spin-icon');
+      statusBadge.style.display = 'none';
+      statusBadgeCheck.innerHTML = '';
 
-    // Show / Hide Status Badge Helper
-    function showStatusBadge(icon, text, check = '', spin = false, tick = false) {
-      statusBadgeIcon.textContent = icon;
-      statusBadgeText.textContent = text;
-      statusBadgeCheck.innerHTML = check ? (check === '✗' ? `<span class="plate-error">${check}</span>` : `<span class="plate-check">${check}</span>`) : '';
-      statusBadge.classList.remove('spin-icon', 'tick-icon');
-      if (spin) statusBadge.classList.add('spin-icon');
-      if (tick) statusBadge.classList.add('tick-icon');
-      statusBadge.classList.add('visible');
-    }
+      entryGateBar.classList.remove('closed');
+      gateClosedIcon.classList.remove('visible');
 
-    function hideStatusBadge() {
-      statusBadge.classList.remove('visible', 'spin-icon', 'tick-icon');
-    }
-
-    // Reset All Visuals
-    function resetVisuals() {
-      // Clear all active timeouts
-      currentAnimationTimeouts.forEach(item => {
-        clearTimeout(item.id);
-        try { item.reject(new Error('Reset')); } catch (e) {}
+      document.querySelectorAll('.slot-box').forEach(s => {
+        s.classList.remove('assigned-active', 'highlight-pulsing', 'unavailable-flash');
       });
-      currentAnimationTimeouts = [];
+
+      carWrapper.style.transition = 'left 2.0s cubic-bezier(0.25, 1, 0.5, 1), top 2.0s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease';
+
+      // Apply Visuals strictly derived from step index
+      switch (step.visual) {
+        case 'move_entry': {
+          const targetX = getElementCenterInLane(zoneEntry);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          break;
+        }
+
+        case 'scan_valid': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          plateText.textContent = 'MH12AB1234';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible', 'scanning');
+          break;
+        }
+
+        case 'plate_ok': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          plateText.textContent = 'MH12AB1234';
+          plateStatusIcon.innerHTML = '<span class="plate-check">✓</span>';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'idle_bounce_scanner': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'idle_pulse_scanner': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'idle_scale_scanner': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'highlight_b15': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          slotB15.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'confirm_b15': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          slotB15.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'fee_receipt': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          if (demoId === 4) slotB18.classList.add('highlight-pulsing');
+          else slotB15.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'payment_monitor': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          if (demoId === 4) slotB18.classList.add('highlight-pulsing');
+          else slotB15.classList.add('highlight-pulsing');
+          statusBadgeIcon.textContent = '💳';
+          statusBadgeText.textContent = 'Payment in progress...';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'payment_done': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          if (demoId === 4) slotB18.classList.add('highlight-pulsing');
+          else slotB15.classList.add('highlight-pulsing');
+          statusBadgeIcon.textContent = '💳';
+          statusBadgeText.textContent = 'Payment Complete';
+          statusBadgeCheck.innerHTML = '<span class="plate-check">✓</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'park_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          break;
+        }
+
+        case 'monitoring_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⏱️';
+          statusBadgeText.textContent = 'Monitoring Started';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'timecheck_ok_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⏱️';
+          statusBadgeText.textContent = 'Time Check OK';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible', 'spin-icon');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'idle_wiggle_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'idle_bounce_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'status_verified_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '🛡️';
+          statusBadgeText.textContent = 'Status Verified';
+          statusBadgeCheck.innerHTML = '<span class="plate-check">✓</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'exit_b15': {
+          const laneRect = laneTrack.getBoundingClientRect();
+          carWrapper.style.top = '22px';
+          carWrapper.style.left = `${laneRect.width + 120}px`;
+          break;
+        }
+
+        case 'scan_invalid': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          plateText.textContent = 'MH12@B1234';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible', 'scanning');
+          break;
+        }
+
+        case 'plate_rejected': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          plateText.textContent = 'MH12@B1234';
+          plateStatusIcon.innerHTML = '<span class="plate-error">✗</span>';
+          regexHint.style.display = 'block';
+          plateBadge.style.display = 'flex';
+          plateBadge.classList.add('visible');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'report_inc001': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          statusBadgeIcon.textContent = '📄';
+          statusBadgeText.textContent = 'Incident Report: INC001';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'entry_denied': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          entryGateBar.classList.add('closed');
+          gateClosedIcon.classList.add('visible');
+          statusBadgeIcon.textContent = '⛔';
+          statusBadgeText.textContent = 'Entry Denied';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'timecheck_spin_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⏱️';
+          statusBadgeText.textContent = 'Checking time...';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible', 'spin-icon');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'time_exceeded_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⚠️';
+          statusBadgeText.textContent = 'Time Exceeded!';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'fine_notice_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '🔔';
+          statusBadgeText.textContent = 'Fine Notice Sent';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'fine_paying_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '💳';
+          statusBadgeText.textContent = 'Paying Fine...';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'fine_paid_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '💳';
+          statusBadgeText.textContent = 'Fine Paid';
+          statusBadgeCheck.innerHTML = '<span class="plate-check">✓</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'fine_cleared_b15': {
+          slotB15.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB15);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '🛡️';
+          statusBadgeText.textContent = 'Fine Cleared';
+          statusBadgeCheck.innerHTML = '<span class="plate-check">✓</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'slot_unavailable_b15': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          slotB15.classList.add('unavailable-flash');
+          statusBadgeIcon.textContent = '❌';
+          statusBadgeText.textContent = 'Slot Unavailable';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'highlight_b18': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          slotB18.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'confirm_b18': {
+          const targetX = getElementCenterInLane(zoneScanner);
+          carWrapper.style.left = `${targetX}px`;
+          carWrapper.style.top = '22px';
+          slotB18.classList.add('highlight-pulsing');
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'park_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          break;
+        }
+
+        case 'monitoring_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⏱️';
+          statusBadgeText.textContent = 'Monitoring Started';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-pulse');
+          break;
+        }
+
+        case 'timecheck_ok_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '⏱️';
+          statusBadgeText.textContent = 'Time Check OK';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible', 'spin-icon');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'idle_wiggle_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          triggerIdle('car-idle-wiggle');
+          break;
+        }
+
+        case 'idle_bounce_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          triggerIdle('car-idle-bounce');
+          break;
+        }
+
+        case 'status_verified_b18': {
+          slotB18.classList.add('assigned-active');
+          const pos = getSlotPosition(slotB18);
+          carWrapper.style.left = `${pos.left}px`;
+          carWrapper.style.top = `${pos.top}px`;
+          statusBadgeIcon.textContent = '🛡️';
+          statusBadgeText.textContent = 'Status Verified';
+          statusBadgeCheck.innerHTML = '<span class="plate-check">✓</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-scale');
+          break;
+        }
+
+        case 'exit_b18': {
+          const laneRect = laneTrack.getBoundingClientRect();
+          carWrapper.style.top = '22px';
+          carWrapper.style.left = `${laneRect.width + 120}px`;
+          break;
+        }
+
+        case 'payment_fail_reverse': {
+          statusBadgeIcon.textContent = '💳';
+          statusBadgeText.textContent = 'Payment Failed';
+          statusBadgeCheck.innerHTML = '<span class="plate-error">✗</span>';
+          statusBadge.style.display = 'flex';
+          statusBadge.classList.add('visible');
+          triggerIdle('car-idle-wiggle');
+
+          setTimeout(() => {
+            carWrapper.style.left = '-140px';
+            carWrapper.style.top = '22px';
+          }, 1000);
+          break;
+        }
+      }
+
+      updatePlaybackControlsUI();
+    }
+
+    // Schedule next automatic step
+    function scheduleNextStep() {
+      if (!isPlaying) return;
+
+      const config = DEMO_CONFIGS[currentDemoId];
+      const duration = getStepDuration();
+
+      stepTimerId = setTimeout(() => {
+        if (!isPlaying) return;
+
+        if (currentStepIndex + 1 < config.steps.length) {
+          currentStepIndex++;
+          renderStep(currentDemoId, currentStepIndex, true);
+          scheduleNextStep();
+        } else {
+          // Finished Demo
+          isPlaying = false;
+          isPaused = false;
+          setDemoButtonsDisabled(false);
+          updatePlaybackControlsUI();
+        }
+      }, duration);
+    }
+
+    // Start Demo Flow
+    function startDemo(demoId) {
+      if (isPlaying) return;
+
+      // Clear any prior state
+      clearTimeout(stepTimerId);
+      currentDemoId = demoId;
+      currentStepIndex = 0;
+      isPlaying = true;
+      isPaused = false;
+      logLineElements = [];
+
+      document.body.classList.remove('animations-paused');
+      setDemoButtonsDisabled(true);
+
+      const config = DEMO_CONFIGS[demoId];
+      appendLog('', true);
+      appendLog(`>>> ${config.title} <<<`);
+
+      renderStep(currentDemoId, currentStepIndex, true);
+      scheduleNextStep();
+    }
+
+    // Toggle Play / Pause
+    function togglePlayPause() {
+      if (!currentDemoId) return;
+
+      const config = DEMO_CONFIGS[currentDemoId];
+      if (currentStepIndex >= config.steps.length - 1 && !isPlaying) return;
+
+      if (isPlaying) {
+        // Pause execution immediately
+        isPlaying = false;
+        isPaused = true;
+        clearTimeout(stepTimerId);
+        document.body.classList.add('animations-paused');
+        updatePlaybackControlsUI();
+      } else if (isPaused) {
+        // Resume execution
+        isPlaying = true;
+        isPaused = false;
+        document.body.classList.remove('animations-paused');
+        updatePlaybackControlsUI();
+        scheduleNextStep();
+      }
+    }
+
+    // Manual Next Step (only while paused)
+    function nextStep() {
+      if (!isPaused || !currentDemoId) return;
+
+      const config = DEMO_CONFIGS[currentDemoId];
+      if (currentStepIndex + 1 < config.steps.length) {
+        currentStepIndex++;
+        renderStep(currentDemoId, currentStepIndex, true);
+      }
+    }
+
+    // Manual Previous Step (only while paused)
+    function previousStep() {
+      if ((!isPaused && !(!isPlaying && currentDemoId)) || !currentDemoId) return;
+      if (currentStepIndex <= 0) return;
+
+      // Remove the last added log line
+      if (logLineElements.length > 0) {
+        const lastLine = logLineElements.pop();
+        if (lastLine && lastLine.parentNode) {
+          lastLine.parentNode.removeChild(lastLine);
+        }
+      }
+
+      currentStepIndex--;
+      isPaused = true;
+      isPlaying = false;
+      document.body.classList.add('animations-paused');
+      renderStep(currentDemoId, currentStepIndex, false);
+    }
+
+    // Reset System to initial empty state
+    function resetSystem() {
+      clearTimeout(stepTimerId);
+      isPlaying = false;
+      isPaused = false;
+      currentDemoId = null;
+      currentStepIndex = -1;
+      logLineElements = [];
+
+      document.body.classList.remove('animations-paused');
+      setDemoButtonsDisabled(false);
 
       // Reset car position
       carWrapper.style.transition = 'none';
@@ -1278,470 +1938,35 @@
       plateBadge.style.display = 'none';
       plateStatusIcon.innerHTML = '';
       regexHint.style.display = 'none';
-      hideStatusBadge();
 
-      // Reset slot highlights & colors for all slots
+      statusBadge.classList.remove('visible', 'spin-icon');
+      statusBadge.style.display = 'none';
+
+      // Reset slot highlights & colors
       document.querySelectorAll('.slot-box').forEach(slot => {
         slot.classList.remove('assigned-active', 'highlight-pulsing', 'unavailable-flash');
       });
 
-      // Reset gate bar & icons
+      // Reset gates
       entryGateBar.classList.remove('closed');
       gateClosedIcon.classList.remove('visible');
 
-      // Reset animations on car
-      carSvg.classList.remove('car-idle-bounce', 'car-idle-scale', 'car-idle-wiggle', 'car-idle-pulse');
-    }
-
-    // Reset button handler
-    function resetSystem() {
-      isRunning = false;
-      currentDemoId = null;
-      resetVisuals();
-      setButtonsDisabled(false);
-
+      // Reset State Panel & Caption
       statePanel.style.borderLeftColor = '#CBD5E1';
       stateCode.textContent = 'State: q0';
       transitionName.textContent = 'Transition: Ready';
       stateDescription.textContent = 'Select a demo button to start the DFA state machine simulation.';
       captionBar.textContent = 'System ready. Choose a demo to begin simulation.';
 
-      // Terminal log is NOT cleared per requirements, but we add a visual separator
+      updatePlaybackControlsUI();
+
       appendLog('[SYSTEM RESET] State machine restored to initial state q0.');
       appendLog('', true);
     }
 
-    // Main Demo Execution Engine
-    async function runDemo(demoId) {
-      if (isRunning) return;
-
-      isRunning = true;
-      currentDemoId = demoId;
-      setButtonsDisabled(true);
-      resetVisuals();
-
-      // Demo specific configurations
-      let demoSteps = [];
-      let demoBorderColor = '#2563EB';
-      let demoTitle = '';
-
-      if (demoId === 1) {
-        demoSteps = DEMO_1_STEPS;
-        demoBorderColor = '#2563EB';
-        demoTitle = 'STARTING DEMO 1: VALID ENTRY (18 STEPS)';
-      } else if (demoId === 2) {
-        demoSteps = DEMO_2_STEPS;
-        demoBorderColor = '#DC2626';
-        demoTitle = 'STARTING DEMO 2: INVALID PLATE (5 STEPS)';
-      } else if (demoId === 3) {
-        demoSteps = DEMO_3_STEPS;
-        demoBorderColor = '#EA580C';
-        demoTitle = 'STARTING DEMO 3: OVERSTAY FINE (21 STEPS)';
-      } else if (demoId === 4) {
-        demoSteps = DEMO_4_STEPS;
-        demoBorderColor = '#7C3AED';
-        demoTitle = 'STARTING DEMO 4: SLOT UNAVAILABLE (19 STEPS)';
-      } else if (demoId === 5) {
-        demoSteps = DEMO_5_STEPS;
-        demoBorderColor = '#991B1B';
-        demoTitle = 'STARTING DEMO 5: PAYMENT FAILURE (11 STEPS)';
-      }
-
-      // Output fresh separator and header for this demo run
-      appendLog('', true);
-      appendLog(`>>> ${demoTitle} <<<`);
-
-      try {
-        // Execute every single step in strict sequence from q0
-        for (let i = 0; i < demoSteps.length; i++) {
-          if (!isRunning) break;
-
-          const step = demoSteps[i];
-
-          // 1. Update State Panel, Caption, and Log in perfect sync
-          updateStateAndLog(step.from, step.to, step.transition, step.description, demoBorderColor);
-
-          // 2. Perform step-specific animation
-          await handleStepAction(step.action);
-
-          // 3. Step hold duration ~2.2 - 2.5 seconds
-          await wait(2300);
-        }
-
-      } catch (err) {
-        console.log('Demo stopped:', err);
-      } finally {
-        isRunning = false;
-        setButtonsDisabled(false);
-      }
-    }
-
-    // Action dispatcher for all distinct animation steps
-    async function handleStepAction(action) {
-      // Re-enable smooth transition for standard movement
-      carWrapper.style.transition = 'left 1.4s cubic-bezier(0.25, 1, 0.5, 1), top 1.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease';
-
-      switch (action) {
-        // ================= SHARED STEPS 1-5 (q0 -> q1 -> q2 -> q3 -> q8 -> q9) =================
-        case 'shared_step1': { // q0 -> q1 (Vehicle_arrive)
-          const targetX = getElementCenterInLane(zoneEntry);
-          carWrapper.style.left = `${targetX}px`;
-          carWrapper.style.top = '22px';
-          break;
-        }
-
-        case 'shared_step2': { // q1 -> q2 (Scan_request)
-          const targetX = getElementCenterInLane(zoneScanner);
-          carWrapper.style.left = `${targetX}px`;
-          carWrapper.style.top = '22px';
-
-          plateText.textContent = 'MH12AB1234';
-          plateStatusIcon.innerHTML = '';
-          regexHint.style.display = 'none';
-          plateBadge.style.display = 'flex';
-          plateBadge.classList.add('visible', 'scanning');
-          break;
-        }
-
-        case 'shared_step3': { // q2 -> q3 (Valid_numberplate)
-          plateBadge.classList.remove('scanning');
-          plateStatusIcon.innerHTML = '<span class="plate-check">✓</span>';
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'shared_step4': { // q3 -> q8 (Time_slot)
-          plateBadge.style.display = 'none';
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'shared_step5': { // q8 -> q9 (Time_slot_selected)
-          triggerIdle('car-idle-pulse');
-          break;
-        }
-
-        // ================= SHARED STEPS 6-12 FOR SLOT B15 (q9 -> q10 through q18 -> q19) =================
-        case 'shared_step6': { // q9 -> q10 (Time_slot_available)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'shared_step7': { // q10 -> q11 (Show_location_slots)
-          slotB15.classList.add('highlight-pulsing');
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'shared_step8': { // q11 -> q15 (User_selected)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'shared_step9': { // q15 -> q16 (Fee_receipt)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'shared_step10': { // q16 -> q17 (Payment_monitor)
-          showStatusBadge('💳', 'Payment in progress...');
-          triggerIdle('car-idle-pulse');
-          break;
-        }
-
-        case 'shared_step11': { // q17 -> q18 (Payment_Done)
-          showStatusBadge('💳', 'Payment Complete', '✓');
-          triggerIdle('car-idle-bounce');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'shared_step12': { // q18 -> q19 (Parking_vehicle)
-          slotB15.classList.remove('highlight-pulsing');
-          slotB15.classList.add('assigned-active');
-          hideStatusBadge();
-
-          const pos = getSlotPosition(slotB15);
-          carWrapper.style.left = `${pos.left}px`;
-          carWrapper.style.top = `${pos.top}px`;
-          break;
-        }
-
-        // ================= DEMO 1 SPECIFIC (STEPS 13-18) =================
-        case 'd1_step13': { // q19 -> q20 (Monitoring_started)
-          showStatusBadge('⏱️', 'Monitoring Started');
-          triggerIdle('car-idle-pulse');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd1_step14': { // q20 -> q21 (Time check performed)
-          showStatusBadge('⏱️', 'Time Check OK', '', true);
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd1_step15': { // q21 -> q25 (Time_not_exceeded)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd1_step16': { // q25 -> q26 (Exit_requested)
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd1_step17': { // q26 -> q27 (Payment slash fine verified)
-          showStatusBadge('🛡️', 'Status Verified', '✓');
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd1_step18': { // q27 -> q28 (Slot_released)
-          slotB15.classList.remove('assigned-active');
-          hideStatusBadge();
-
-          const exitX = getElementCenterInLane(zoneExit);
-          carWrapper.style.top = '22px';
-          carWrapper.style.left = `${exitX}px`;
-
-          await wait(1400);
-          const laneRect = laneTrack.getBoundingClientRect();
-          carWrapper.style.left = `${laneRect.width + 120}px`;
-          break;
-        }
-
-        // ================= DEMO 2 (5 STEPS) =================
-        case 'd2_step1': { // q0 -> q1 (Vehicle_arrive)
-          const targetX = getElementCenterInLane(zoneEntry);
-          carWrapper.style.left = `${targetX}px`;
-          carWrapper.style.top = '22px';
-          break;
-        }
-
-        case 'd2_step2': { // q1 -> q2 (Scan_request)
-          const targetX = getElementCenterInLane(zoneScanner);
-          carWrapper.style.left = `${targetX}px`;
-          carWrapper.style.top = '22px';
-
-          plateText.textContent = 'MH12@B1234';
-          plateStatusIcon.innerHTML = '';
-          regexHint.style.display = 'none';
-          plateBadge.style.display = 'flex';
-          plateBadge.classList.add('visible', 'scanning');
-          break;
-        }
-
-        case 'd2_step3': { // q2 -> q4 (Invalid_numberplate)
-          plateBadge.classList.remove('scanning');
-          plateStatusIcon.innerHTML = '<span class="plate-error">✗</span>';
-          regexHint.style.display = 'block';
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd2_step4': { // q4 -> q5 (Report_generated)
-          showStatusBadge('📄', 'Incident Report: INC001');
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd2_step5': { // q5 -> q28 (Report_submitted)
-          entryGateBar.classList.add('closed');
-          gateClosedIcon.classList.add('visible');
-          showStatusBadge('⛔', 'Entry Denied');
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        // ================= DEMO 3 OVERSTAY (STEPS 13-21) =================
-        case 'd3_step13': { // q19 -> q20 (Monitoring_started)
-          showStatusBadge('⏱️', 'Monitoring Started');
-          triggerIdle('car-idle-bounce');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd3_step14': { // q20 -> q21 (Time check performed)
-          showStatusBadge('⏱️', 'Checking time...', '', true);
-          triggerIdle('car-idle-pulse');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd3_step15': { // q21 -> q22 (Time_exceeded)
-          showStatusBadge('⚠️', 'Time Exceeded!');
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd3_step16': { // q22 -> q23 (Send_notification)
-          showStatusBadge('🔔', 'Fine Notice Sent');
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd3_step17': { // q23 -> q24 (Fine_payment_initiated)
-          showStatusBadge('💳', 'Paying Fine...');
-          triggerIdle('car-idle-pulse');
-          break;
-        }
-
-        case 'd3_step18': { // q24 -> q25 (Fine_Payment_successful)
-          showStatusBadge('💳', 'Fine Paid', '✓');
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd3_step19': { // q25 -> q26 (Exit_requested)
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd3_step20': { // q26 -> q27 (Payment slash fine verified)
-          showStatusBadge('🛡️', 'Fine Cleared', '✓');
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd3_step21': { // q27 -> q28 (Slot_released)
-          slotB15.classList.remove('assigned-active');
-          hideStatusBadge();
-
-          const exitX = getElementCenterInLane(zoneExit);
-          carWrapper.style.top = '22px';
-          carWrapper.style.left = `${exitX}px`;
-
-          await wait(1400);
-          const laneRect = laneTrack.getBoundingClientRect();
-          carWrapper.style.left = `${laneRect.width + 120}px`;
-          break;
-        }
-
-        // ================= DEMO 4 (SLOT UNAVAILABLE, STEPS 6-19) =================
-        case 'd4_step6': { // q9 -> q12 (Time_slot_unavailable)
-          slotB15.classList.add('unavailable-flash');
-          showStatusBadge('❌', 'Slot Unavailable');
-          triggerIdle('car-idle-wiggle');
-          setTimeout(() => {
-            slotB15.classList.remove('unavailable-flash');
-            hideStatusBadge();
-          }, 1800);
-          break;
-        }
-
-        case 'd4_step7': { // q12 -> q13 (Next_time_slot_select)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'd4_step8': { // q13 -> q14 (Next_location_slot_select)
-          slotB18.classList.add('highlight-pulsing');
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd4_step9': { // q14 -> q15 (User_selected)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd4_step10': { // q15 -> q16 (Fee_receipt)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'd4_step11': { // q16 -> q17 (Payment_monitor)
-          showStatusBadge('💳', 'Payment in progress...');
-          triggerIdle('car-idle-pulse');
-          break;
-        }
-
-        case 'd4_step12': { // q17 -> q18 (Payment_Done)
-          showStatusBadge('💳', 'Payment Complete', '✓');
-          triggerIdle('car-idle-bounce');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd4_step13': { // q18 -> q19 (Parking_vehicle)
-          slotB18.classList.remove('highlight-pulsing');
-          slotB18.classList.add('assigned-active');
-          hideStatusBadge();
-
-          const pos = getSlotPosition(slotB18);
-          carWrapper.style.left = `${pos.left}px`;
-          carWrapper.style.top = `${pos.top}px`;
-          break;
-        }
-
-        case 'd4_step14': { // q19 -> q20 (Monitoring_started)
-          showStatusBadge('⏱️', 'Monitoring Started');
-          triggerIdle('car-idle-pulse');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd4_step15': { // q20 -> q21 (Time check performed)
-          showStatusBadge('⏱️', 'Time Check OK', '', true);
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd4_step16': { // q21 -> q25 (Time_not_exceeded)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd4_step17': { // q25 -> q26 (Exit_requested)
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd4_step18': { // q26 -> q27 (Payment slash fine verified)
-          showStatusBadge('🛡️', 'Status Verified', '✓');
-          triggerIdle('car-idle-scale');
-          setTimeout(hideStatusBadge, 1800);
-          break;
-        }
-
-        case 'd4_step19': { // q27 -> q28 (Slot_released)
-          slotB18.classList.remove('assigned-active');
-          hideStatusBadge();
-
-          const exitX = getElementCenterInLane(zoneExit);
-          carWrapper.style.top = '22px';
-          carWrapper.style.left = `${exitX}px`;
-
-          await wait(1400);
-          const laneRect = laneTrack.getBoundingClientRect();
-          carWrapper.style.left = `${laneRect.width + 120}px`;
-          break;
-        }
-
-        // ================= DEMO 5 (PAYMENT FAILURE, STEP 11) =================
-        case 'd5_step11': { // q17 -> q28 (Payment_fail)
-          slotB15.classList.remove('highlight-pulsing');
-          showStatusBadge('💳', 'Payment Failed', '✗');
-          triggerIdle('car-idle-wiggle');
-
-          // Move car back out through the entry gate to the left (off-screen)
-          await wait(1200);
-          carWrapper.style.left = '-140px';
-          carWrapper.style.top = '22px';
-          break;
-        }
-      }
-    }
-
-    // Recalculate car position on window resize if parked
+    // Resize recalculation for parked coordinates
     window.addEventListener('resize', () => {
-      if (isRunning) {
+      if (currentDemoId && currentStepIndex >= 0) {
         if (slotB15.classList.contains('assigned-active')) {
           const pos = getSlotPosition(slotB15);
           carWrapper.style.transition = 'none';
