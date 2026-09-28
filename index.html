@@ -757,8 +757,8 @@
   </main>
 
   <script>
-    // Shared Steps 1 through 7 for normal booking flows (q0 to q9)
-    const SHARED_BOOKING_PRE_SLOT = [
+    // Shared Steps 1 through 5 for direct slot booking (q0 -> q1, q1 -> q2, q2 -> q3, q3 -> q8, q8 -> q9)
+    const SHARED_STEPS_1_TO_5 = [
       {
         from: 'q0',
         to: 'q1',
@@ -782,137 +782,118 @@
       },
       {
         from: 'q3',
-        to: 'q6',
-        transition: 'Vehicle_type_selected',
-        description: 'The vehicle type is identified as four wheeler',
-        action: 'shared_step4'
-      },
-      {
-        from: 'q6',
-        to: 'q7',
-        transition: 'Parking_type_selected',
-        description: 'The driver selects normal parking type',
-        action: 'shared_step5'
-      },
-      {
-        from: 'q7',
         to: 'q8',
         transition: 'Time_slot',
         description: 'The driver selects a preferred time slot of fourteen thirty',
-        action: 'shared_step6'
+        action: 'shared_step4'
       },
       {
         from: 'q8',
         to: 'q9',
         transition: 'Time_slot_selected',
         description: 'The selected time slot is submitted for availability checking',
-        action: 'shared_step7'
+        action: 'shared_step5'
       }
     ];
 
-    // Shared Steps 8 through 14 for Slot B15 assigned flow (q9 to q19)
-    const SHARED_B15_SLOT_AND_PARK = [
+    // Shared Steps 6 through 12 for Demo 1, Demo 3, and Demo 5 (q9 -> q10 through q18 -> q19)
+    const SHARED_STEPS_6_TO_12 = [
       {
         from: 'q9',
         to: 'q10',
         transition: 'Time_slot_available',
         description: 'The system confirms the fourteen thirty slot is available',
-        action: 'shared_step8'
+        action: 'shared_step6'
       },
       {
         from: 'q10',
         to: 'q11',
         transition: 'Show_location_slots',
         description: 'The system displays slot B15 as the available location',
-        action: 'shared_step9'
+        action: 'shared_step7'
       },
       {
         from: 'q11',
         to: 'q15',
         transition: 'User_selected',
         description: 'The driver confirms and selects slot B15',
-        action: 'shared_step10'
+        action: 'shared_step8'
       },
       {
         from: 'q15',
         to: 'q16',
         transition: 'Fee_receipt',
-        description: 'The parking fee is calculated and a receipt is generated',
-        action: 'shared_step11'
+        description: 'The parking fee is calculated based on duration and a receipt is generated',
+        action: 'shared_step9'
       },
       {
         from: 'q16',
         to: 'q17',
         transition: 'Payment_monitor',
         description: 'The payment process is initiated and monitored',
-        action: 'shared_step12'
+        action: 'shared_step10'
       },
       {
         from: 'q17',
         to: 'q18',
         transition: 'Payment_Done',
         description: 'Payment is completed successfully',
-        action: 'shared_step13'
+        action: 'shared_step11'
       },
       {
         from: 'q18',
         to: 'q19',
         transition: 'Parking_vehicle',
-        description: 'Slot B15 is officially assigned and a parking ticket is generated',
-        action: 'shared_step14'
+        description: 'Slot B15 is assigned and a parking ticket is generated',
+        action: 'shared_step12'
       }
     ];
 
-    // Complete Shared 14 Steps for Demo 1 and Demo 3
-    const SHARED_ENTRY_STEPS = [
-      ...SHARED_BOOKING_PRE_SLOT,
-      ...SHARED_B15_SLOT_AND_PARK
-    ];
-
-    // Demo 1: Valid Entry (20 Steps)
+    // Demo 1: Valid Entry (18 Steps)
     const DEMO_1_STEPS = [
-      ...SHARED_ENTRY_STEPS,
+      ...SHARED_STEPS_1_TO_5,
+      ...SHARED_STEPS_6_TO_12,
       {
         from: 'q19',
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd1_step15'
+        action: 'd1_step13'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
-        description: 'The system performs a time check on the parked vehicle',
-        action: 'd1_step16'
+        description: 'The system performs a time check on the parked car',
+        action: 'd1_step14'
       },
       {
         from: 'q21',
         to: 'q25',
         transition: 'Time_not_exceeded',
         description: 'The parking duration is within the allowed limit, no overstay detected',
-        action: 'd1_step17'
+        action: 'd1_step15'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd1_step18'
+        action: 'd1_step16'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
         description: 'The system verifies that payment and fine status are clear',
-        action: 'd1_step19'
+        action: 'd1_step17'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
-        description: 'Slot B15 is released and the vehicle exits successfully',
-        action: 'd1_step20'
+        description: 'Slot B15 is released and the car exits successfully',
+        action: 'd1_step18'
       }
     ];
 
@@ -955,221 +936,193 @@
       }
     ];
 
-    // Demo 3: Overstay Fine Full Path (23 Steps)
+    // Demo 3: Overstay Fine (21 Steps)
     const DEMO_3_STEPS = [
-      ...SHARED_ENTRY_STEPS,
+      ...SHARED_STEPS_1_TO_5,
+      ...SHARED_STEPS_6_TO_12,
       {
         from: 'q19',
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd3_step15'
+        action: 'd3_step13'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
-        description: 'The system performs a time check on the parked vehicle',
-        action: 'd3_step16'
+        description: 'The system performs a time check on the parked car',
+        action: 'd3_step14'
       },
       {
         from: 'q21',
         to: 'q22',
         transition: 'Time_exceeded',
-        description: 'The allowed parking time has been exceeded',
-        action: 'd3_step17'
+        description: 'The allowed parking time has been exceeded and an overstay fine is generated',
+        action: 'd3_step15'
       },
       {
         from: 'q22',
         to: 'q23',
         transition: 'Send_notification',
         description: 'The driver is notified on their phone that a fine must be paid',
-        action: 'd3_step18'
+        action: 'd3_step16'
       },
       {
         from: 'q23',
         to: 'q24',
         transition: 'Fine_payment_initiated',
         description: 'The fine payment process is initiated',
-        action: 'd3_step19'
+        action: 'd3_step17'
       },
       {
         from: 'q24',
         to: 'q25',
         transition: 'Fine_Payment_successful',
         description: 'The overstay fine is paid successfully',
-        action: 'd3_step20'
+        action: 'd3_step18'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd3_step21'
+        action: 'd3_step19'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
-        description: 'The system verifies that the fine has been paid and clears the vehicle for exit',
-        action: 'd3_step22'
+        description: 'The system verifies that the fine has been paid and clears the car for exit',
+        action: 'd3_step20'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
-        description: 'Slot B15 is released and the vehicle exits successfully',
-        action: 'd3_step23'
+        description: 'Slot B15 is released and the car exits successfully',
+        action: 'd3_step21'
       }
     ];
 
-    // Demo 4: Slot Unavailable (21 Steps)
+    // Demo 4: Slot Unavailable (19 Steps)
     const DEMO_4_STEPS = [
-      ...SHARED_BOOKING_PRE_SLOT,
+      ...SHARED_STEPS_1_TO_5,
       {
         from: 'q9',
         to: 'q12',
         transition: 'Time_slot_unavailable',
         description: 'The requested fourteen thirty slot is not available',
-        action: 'd4_step8'
+        action: 'd4_step6'
       },
       {
         from: 'q12',
         to: 'q13',
         transition: 'Next_time_slot_select',
-        description: 'The system displays the next available time slots to the driver',
-        action: 'd4_step9'
+        description: 'The system displays the next available slots to the driver',
+        action: 'd4_step7'
       },
       {
         from: 'q13',
         to: 'q14',
         transition: 'Next_location_slot_select',
-        description: 'The driver selects an alternative slot, B18, from the next available options',
-        action: 'd4_step10'
+        description: 'The driver selects an alternative slot, B18',
+        action: 'd4_step8'
       },
       {
         from: 'q14',
         to: 'q15',
         transition: 'User_selected',
-        description: 'The driver confirms and decides to continue with slot B18',
-        action: 'd4_step11'
+        description: 'The driver decides to continue with slot B18',
+        action: 'd4_step9'
       },
       {
         from: 'q15',
         to: 'q16',
         transition: 'Fee_receipt',
-        description: 'The parking fee is calculated and a receipt is generated',
-        action: 'd4_step12'
+        description: 'The parking fee is calculated based on duration and a receipt is generated',
+        action: 'd4_step10'
       },
       {
         from: 'q16',
         to: 'q17',
         transition: 'Payment_monitor',
         description: 'The payment process is initiated and monitored',
-        action: 'd4_step13'
+        action: 'd4_step11'
       },
       {
         from: 'q17',
         to: 'q18',
         transition: 'Payment_Done',
         description: 'Payment is completed successfully',
-        action: 'd4_step14'
+        action: 'd4_step12'
       },
       {
         from: 'q18',
         to: 'q19',
         transition: 'Parking_vehicle',
-        description: 'Slot B18 is officially assigned and a parking ticket is generated',
-        action: 'd4_step15'
+        description: 'Slot B18 is assigned and a parking ticket is generated',
+        action: 'd4_step13'
       },
       {
         from: 'q19',
         to: 'q20',
         transition: 'Monitoring_started',
         description: 'The system begins monitoring the parking duration',
-        action: 'd4_step16'
+        action: 'd4_step14'
       },
       {
         from: 'q20',
         to: 'q21',
         transition: 'Time check performed',
-        description: 'The system performs a time check on the parked vehicle',
-        action: 'd4_step17'
+        description: 'The system performs a time check on the parked car',
+        action: 'd4_step15'
       },
       {
         from: 'q21',
         to: 'q25',
         transition: 'Time_not_exceeded',
         description: 'The parking duration is within the allowed limit, no overstay detected',
-        action: 'd4_step18'
+        action: 'd4_step16'
       },
       {
         from: 'q25',
         to: 'q26',
         transition: 'Exit_requested',
         description: 'The driver requests to exit the parking lot',
-        action: 'd4_step19'
+        action: 'd4_step17'
       },
       {
         from: 'q26',
         to: 'q27',
         transition: 'Payment slash fine verified',
         description: 'The system verifies that payment and fine status are clear',
-        action: 'd4_step20'
+        action: 'd4_step18'
       },
       {
         from: 'q27',
         to: 'q28',
         transition: 'Slot_released',
-        description: 'Slot B18 is released and the vehicle exits successfully',
-        action: 'd4_step21'
+        description: 'Slot B18 is released and the car exits successfully',
+        action: 'd4_step19'
       }
     ];
 
-    // Demo 5: Payment Failure (13 Steps)
+    // Demo 5: Payment Failure (11 Steps)
     const DEMO_5_STEPS = [
-      ...SHARED_BOOKING_PRE_SLOT,
-      {
-        from: 'q9',
-        to: 'q10',
-        transition: 'Time_slot_available',
-        description: 'The system confirms the fourteen thirty slot is available',
-        action: 'd5_step8'
-      },
-      {
-        from: 'q10',
-        to: 'q11',
-        transition: 'Show_location_slots',
-        description: 'The system displays slot B15 as the available location',
-        action: 'd5_step9'
-      },
-      {
-        from: 'q11',
-        to: 'q15',
-        transition: 'User_selected',
-        description: 'The driver confirms and selects slot B15',
-        action: 'd5_step10'
-      },
-      {
-        from: 'q15',
-        to: 'q16',
-        transition: 'Fee_receipt',
-        description: 'The parking fee is calculated and a receipt is generated',
-        action: 'd5_step11'
-      },
-      {
-        from: 'q16',
-        to: 'q17',
-        transition: 'Payment_monitor',
-        description: 'The payment process is initiated and monitored',
-        action: 'd5_step12'
-      },
+      ...SHARED_STEPS_1_TO_5,
+      // Steps 6 through 10 identical to Demo 1
+      SHARED_STEPS_6_TO_12[0], // q9 -> q10 (Time_slot_available)
+      SHARED_STEPS_6_TO_12[1], // q10 -> q11 (Show_location_slots)
+      SHARED_STEPS_6_TO_12[2], // q11 -> q15 (User_selected)
+      SHARED_STEPS_6_TO_12[3], // q15 -> q16 (Fee_receipt)
+      SHARED_STEPS_6_TO_12[4], // q16 -> q17 (Payment_monitor)
       {
         from: 'q17',
         to: 'q28',
         transition: 'Payment_fail',
-        description: 'Payment fails, so the vehicle does not proceed to slot assignment and the process ends',
-        action: 'd5_step13'
+        description: 'Payment fails, so the car does not proceed to slot assignment and the process ends',
+        action: 'd5_step11'
       }
     ];
 
@@ -1375,28 +1328,28 @@
       if (demoId === 1) {
         demoSteps = DEMO_1_STEPS;
         demoBorderColor = '#2563EB';
-        demoTitle = 'DEMO 1: VALID ENTRY (20 STATES)';
+        demoTitle = 'STARTING DEMO 1: VALID ENTRY (18 STEPS)';
       } else if (demoId === 2) {
         demoSteps = DEMO_2_STEPS;
         demoBorderColor = '#DC2626';
-        demoTitle = 'DEMO 2: INVALID PLATE (5 STATES)';
+        demoTitle = 'STARTING DEMO 2: INVALID PLATE (5 STEPS)';
       } else if (demoId === 3) {
         demoSteps = DEMO_3_STEPS;
         demoBorderColor = '#EA580C';
-        demoTitle = 'DEMO 3: OVERSTAY FINE FULL PATH (23 STATES)';
+        demoTitle = 'STARTING DEMO 3: OVERSTAY FINE (21 STEPS)';
       } else if (demoId === 4) {
         demoSteps = DEMO_4_STEPS;
         demoBorderColor = '#7C3AED';
-        demoTitle = 'DEMO 4: SLOT UNAVAILABLE (21 STATES)';
+        demoTitle = 'STARTING DEMO 4: SLOT UNAVAILABLE (19 STEPS)';
       } else if (demoId === 5) {
         demoSteps = DEMO_5_STEPS;
         demoBorderColor = '#991B1B';
-        demoTitle = 'DEMO 5: PAYMENT FAILURE (13 STATES)';
+        demoTitle = 'STARTING DEMO 5: PAYMENT FAILURE (11 STEPS)';
       }
 
       // Output fresh separator and header for this demo run
       appendLog('', true);
-      appendLog(`>>> STARTING ${demoTitle} <<<`);
+      appendLog(`>>> ${demoTitle} <<<`);
 
       try {
         // Execute every single step in strict sequence from q0
@@ -1429,7 +1382,7 @@
       carWrapper.style.transition = 'left 1.4s cubic-bezier(0.25, 1, 0.5, 1), top 1.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease';
 
       switch (action) {
-        // ================= SHARED ENTRY STEPS (1-14) =================
+        // ================= SHARED STEPS 1-5 (q0 -> q1 -> q2 -> q3 -> q8 -> q9) =================
         case 'shared_step1': { // q0 -> q1 (Vehicle_arrive)
           const targetX = getElementCenterInLane(zoneEntry);
           carWrapper.style.left = `${targetX}px`;
@@ -1457,62 +1410,53 @@
           break;
         }
 
-        case 'shared_step4': { // q3 -> q6 (Vehicle_type_selected)
+        case 'shared_step4': { // q3 -> q8 (Time_slot)
           plateBadge.style.display = 'none';
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'shared_step5': { // q6 -> q7 (Parking_type_selected)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'shared_step6': { // q7 -> q8 (Time_slot)
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'shared_step7': { // q8 -> q9 (Time_slot_selected)
+        case 'shared_step5': { // q8 -> q9 (Time_slot_selected)
           triggerIdle('car-idle-pulse');
           break;
         }
 
-        case 'shared_step8': { // q9 -> q10 (Time_slot_available)
+        // ================= SHARED STEPS 6-12 FOR SLOT B15 (q9 -> q10 through q18 -> q19) =================
+        case 'shared_step6': { // q9 -> q10 (Time_slot_available)
           triggerIdle('car-idle-scale');
           break;
         }
 
-        case 'shared_step9': { // q10 -> q11 (Show_location_slots)
+        case 'shared_step7': { // q10 -> q11 (Show_location_slots)
           slotB15.classList.add('highlight-pulsing');
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'shared_step10': { // q11 -> q15 (User_selected)
+        case 'shared_step8': { // q11 -> q15 (User_selected)
           triggerIdle('car-idle-wiggle');
           break;
         }
 
-        case 'shared_step11': { // q15 -> q16 (Fee_receipt)
+        case 'shared_step9': { // q15 -> q16 (Fee_receipt)
           triggerIdle('car-idle-scale');
           break;
         }
 
-        case 'shared_step12': { // q16 -> q17 (Payment_monitor)
+        case 'shared_step10': { // q16 -> q17 (Payment_monitor)
           showStatusBadge('💳', 'Payment in progress...');
           triggerIdle('car-idle-pulse');
           break;
         }
 
-        case 'shared_step13': { // q17 -> q18 (Payment_Done)
+        case 'shared_step11': { // q17 -> q18 (Payment_Done)
           showStatusBadge('💳', 'Payment Complete', '✓');
           triggerIdle('car-idle-bounce');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'shared_step14': { // q18 -> q19 (Parking_vehicle)
+        case 'shared_step12': { // q18 -> q19 (Parking_vehicle)
           slotB15.classList.remove('highlight-pulsing');
           slotB15.classList.add('assigned-active');
           hideStatusBadge();
@@ -1523,39 +1467,39 @@
           break;
         }
 
-        // ================= DEMO 1 (STEPS 15-20) =================
-        case 'd1_step15': { // q19 -> q20 (Monitoring_started)
+        // ================= DEMO 1 SPECIFIC (STEPS 13-18) =================
+        case 'd1_step13': { // q19 -> q20 (Monitoring_started)
           showStatusBadge('⏱️', 'Monitoring Started');
           triggerIdle('car-idle-pulse');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd1_step16': { // q20 -> q21 (Time check performed)
-          showStatusBadge('⏱️', 'Time Check OK', '', false, true);
+        case 'd1_step14': { // q20 -> q21 (Time check performed)
+          showStatusBadge('⏱️', 'Time Check OK', '', true);
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd1_step17': { // q21 -> q25 (Time_not_exceeded)
+        case 'd1_step15': { // q21 -> q25 (Time_not_exceeded)
           triggerIdle('car-idle-wiggle');
           break;
         }
 
-        case 'd1_step18': { // q25 -> q26 (Exit_requested)
+        case 'd1_step16': { // q25 -> q26 (Exit_requested)
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'd1_step19': { // q26 -> q27 (Payment slash fine verified)
+        case 'd1_step17': { // q26 -> q27 (Payment slash fine verified)
           showStatusBadge('🛡️', 'Status Verified', '✓');
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd1_step20': { // q27 -> q28 (Slot_released)
+        case 'd1_step18': { // q27 -> q28 (Slot_released)
           slotB15.classList.remove('assigned-active');
           hideStatusBadge();
 
@@ -1612,59 +1556,59 @@
           break;
         }
 
-        // ================= DEMO 3 OVERSTAY DIVERGENCE (STEPS 15-23) =================
-        case 'd3_step15': { // q19 -> q20 (Monitoring_started)
-          showStatusBadge('⏱️', 'Monitoring Duration');
+        // ================= DEMO 3 OVERSTAY (STEPS 13-21) =================
+        case 'd3_step13': { // q19 -> q20 (Monitoring_started)
+          showStatusBadge('⏱️', 'Monitoring Started');
           triggerIdle('car-idle-bounce');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd3_step16': { // q20 -> q21 (Time check performed)
+        case 'd3_step14': { // q20 -> q21 (Time check performed)
           showStatusBadge('⏱️', 'Checking time...', '', true);
           triggerIdle('car-idle-pulse');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd3_step17': { // q21 -> q22 (Time_exceeded)
+        case 'd3_step15': { // q21 -> q22 (Time_exceeded)
           showStatusBadge('⚠️', 'Time Exceeded!');
           triggerIdle('car-idle-wiggle');
           break;
         }
 
-        case 'd3_step18': { // q22 -> q23 (Send_notification)
+        case 'd3_step16': { // q22 -> q23 (Send_notification)
           showStatusBadge('🔔', 'Fine Notice Sent');
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'd3_step19': { // q23 -> q24 (Fine_payment_initiated)
+        case 'd3_step17': { // q23 -> q24 (Fine_payment_initiated)
           showStatusBadge('💳', 'Paying Fine...');
           triggerIdle('car-idle-pulse');
           break;
         }
 
-        case 'd3_step20': { // q24 -> q25 (Fine_Payment_successful)
+        case 'd3_step18': { // q24 -> q25 (Fine_Payment_successful)
           showStatusBadge('💳', 'Fine Paid', '✓');
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd3_step21': { // q25 -> q26 (Exit_requested)
+        case 'd3_step19': { // q25 -> q26 (Exit_requested)
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'd3_step22': { // q26 -> q27 (Payment slash fine verified)
+        case 'd3_step20': { // q26 -> q27 (Payment slash fine verified)
           showStatusBadge('🛡️', 'Fine Cleared', '✓');
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd3_step23': { // q27 -> q28 (Slot_released)
+        case 'd3_step21': { // q27 -> q28 (Slot_released)
           slotB15.classList.remove('assigned-active');
           hideStatusBadge();
 
@@ -1678,8 +1622,8 @@
           break;
         }
 
-        // ================= DEMO 4 (SLOT UNAVAILABLE, STEPS 8-21) =================
-        case 'd4_step8': { // q9 -> q12 (Time_slot_unavailable)
+        // ================= DEMO 4 (SLOT UNAVAILABLE, STEPS 6-19) =================
+        case 'd4_step6': { // q9 -> q12 (Time_slot_unavailable)
           slotB15.classList.add('unavailable-flash');
           showStatusBadge('❌', 'Slot Unavailable');
           triggerIdle('car-idle-wiggle');
@@ -1690,41 +1634,41 @@
           break;
         }
 
-        case 'd4_step9': { // q12 -> q13 (Next_time_slot_select)
+        case 'd4_step7': { // q12 -> q13 (Next_time_slot_select)
           triggerIdle('car-idle-scale');
           break;
         }
 
-        case 'd4_step10': { // q13 -> q14 (Next_location_slot_select)
+        case 'd4_step8': { // q13 -> q14 (Next_location_slot_select)
           slotB18.classList.add('highlight-pulsing');
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'd4_step11': { // q14 -> q15 (User_selected)
+        case 'd4_step9': { // q14 -> q15 (User_selected)
           triggerIdle('car-idle-wiggle');
           break;
         }
 
-        case 'd4_step12': { // q15 -> q16 (Fee_receipt)
+        case 'd4_step10': { // q15 -> q16 (Fee_receipt)
           triggerIdle('car-idle-scale');
           break;
         }
 
-        case 'd4_step13': { // q16 -> q17 (Payment_monitor)
+        case 'd4_step11': { // q16 -> q17 (Payment_monitor)
           showStatusBadge('💳', 'Payment in progress...');
           triggerIdle('car-idle-pulse');
           break;
         }
 
-        case 'd4_step14': { // q17 -> q18 (Payment_Done)
+        case 'd4_step12': { // q17 -> q18 (Payment_Done)
           showStatusBadge('💳', 'Payment Complete', '✓');
           triggerIdle('car-idle-bounce');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd4_step15': { // q18 -> q19 (Parking_vehicle)
+        case 'd4_step13': { // q18 -> q19 (Parking_vehicle)
           slotB18.classList.remove('highlight-pulsing');
           slotB18.classList.add('assigned-active');
           hideStatusBadge();
@@ -1735,38 +1679,38 @@
           break;
         }
 
-        case 'd4_step16': { // q19 -> q20 (Monitoring_started)
+        case 'd4_step14': { // q19 -> q20 (Monitoring_started)
           showStatusBadge('⏱️', 'Monitoring Started');
           triggerIdle('car-idle-pulse');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd4_step17': { // q20 -> q21 (Time check performed)
+        case 'd4_step15': { // q20 -> q21 (Time check performed)
           showStatusBadge('⏱️', 'Time Check OK', '', true);
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd4_step18': { // q21 -> q25 (Time_not_exceeded)
+        case 'd4_step16': { // q21 -> q25 (Time_not_exceeded)
           triggerIdle('car-idle-wiggle');
           break;
         }
 
-        case 'd4_step19': { // q25 -> q26 (Exit_requested)
+        case 'd4_step17': { // q25 -> q26 (Exit_requested)
           triggerIdle('car-idle-bounce');
           break;
         }
 
-        case 'd4_step20': { // q26 -> q27 (Payment slash fine verified)
+        case 'd4_step18': { // q26 -> q27 (Payment slash fine verified)
           showStatusBadge('🛡️', 'Status Verified', '✓');
           triggerIdle('car-idle-scale');
           setTimeout(hideStatusBadge, 1800);
           break;
         }
 
-        case 'd4_step21': { // q27 -> q28 (Slot_released)
+        case 'd4_step19': { // q27 -> q28 (Slot_released)
           slotB18.classList.remove('assigned-active');
           hideStatusBadge();
 
@@ -1780,35 +1724,8 @@
           break;
         }
 
-        // ================= DEMO 5 (PAYMENT FAILURE, STEPS 8-13) =================
-        case 'd5_step8': { // q9 -> q10 (Time_slot_available)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'd5_step9': { // q10 -> q11 (Show_location_slots)
-          slotB15.classList.add('highlight-pulsing');
-          triggerIdle('car-idle-bounce');
-          break;
-        }
-
-        case 'd5_step10': { // q11 -> q15 (User_selected)
-          triggerIdle('car-idle-wiggle');
-          break;
-        }
-
-        case 'd5_step11': { // q15 -> q16 (Fee_receipt)
-          triggerIdle('car-idle-scale');
-          break;
-        }
-
-        case 'd5_step12': { // q16 -> q17 (Payment_monitor)
-          showStatusBadge('💳', 'Payment in progress...');
-          triggerIdle('car-idle-pulse');
-          break;
-        }
-
-        case 'd5_step13': { // q17 -> q28 (Payment_fail)
+        // ================= DEMO 5 (PAYMENT FAILURE, STEP 11) =================
+        case 'd5_step11': { // q17 -> q28 (Payment_fail)
           slotB15.classList.remove('highlight-pulsing');
           showStatusBadge('💳', 'Payment Failed', '✗');
           triggerIdle('car-idle-wiggle');
